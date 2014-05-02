@@ -1,0 +1,130 @@
+
+{% extends 'layout.html' %}
+ {% load i18n %}
+ {% block title %} Contact {% endblock %}
+{% block scripts %}
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrz_XHoevNRWoQ3mz7RtIam9sHIG2GK30&sensor=true"></script>
+	<script src="{{STATIC_URL}}js/validate.js"></script>
+	 </script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("#contact-link").addClass("active");
+        $("#contact-form").validate({
+        submitHandler: function(form) {
+          var form = $("#contact-form").serialize();
+            $.ajax('{% url 'contact' %}',{
+                data:form,
+                type:'post',
+                cache:false,
+                beforeSend:function(result){
+                    $("#response").html("<span>Sending ...</span>");
+                },
+                success:function(result){
+                
+                 $("#response").html(result);
+                 
+                $("#form-reserva").each(function(){
+                    this.reset();
+                                });
+                },
+                error:function(e){
+                    $("#response").html("Error");
+                  }
+            })
+
+
+        }
+       });
+
+
+    })
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(21.099645,-86.766963),
+          zoom: 13,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+         var infowindow = new google.maps.InfoWindow({
+                content: ''
+         	});
+        var myLatlng = new google.maps.LatLng(21.099645,-86.766963);
+        var icono_backstage="{{STATIC_URL}}img/pin.png";
+        var contenido="Blvd Kukulcan  km 13.5";
+        var marker = new google.maps.Marker({
+    	position: myLatlng,
+    	title:"Backstage",
+    	icon:icono_backstage,
+		});
+		marker.setMap(map);
+		(function(marker, contenido){                       
+            google.maps.event.addListener(marker, 'click', function() {
+                infowindow.setContent(contenido);
+                infowindow.open(map, marker);
+            });
+        })(marker,contenido);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+{% endblock %}
+{% block css %}
+ <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/contact.css" />
+{% endblock %}
+{% block content %}
+ <div class="jumbotron"><div id="map-canvas"></div></div>
+ <div class="container">
+ 	<div class="row">
+	<section class="span8 offset2 text-center">
+		<h1>{% trans "Location" %}</h1>
+		{% if request.LANGUAGE_CODE == "es" %}
+		<p class="pontano-16"> Blvd Kukulcan  km 13.5 entre Plaza Kukulcan & The Royal Sands & Spa, Zona Hotelera, Cancún, Quintana Roo, Mexico</p>
+		<p class="pontano-16">Teléfono: <a class="phone-link" href="tel:9982875959"> (998) 2 87 59 59</a></p>
+		{% else %}
+		<p class="pontano-16">Kukulcán Blvd Km 13.5 between Kukulcan Plaza & The Royal Sands & Spa. Hotel Zone Cancún Quintana Roo, México.</p>
+		<p class="pontano-16">Phone number: <a class="phone-link" href="tel:9982875959"> (998) 2 87 59 59</a></p>
+		{% endif %}
+		<hr>
+		<h2>{% trans "Write us" %}</h2>
+		<form id="contact-form">{% csrf_token %}
+			<div class="row-fluid">
+			  	<div class="span5 offset1">
+			    	<label class="control-label span4" for="inputNombre">{% trans "Name" %}</label>
+		      		<input required name="nombre" class="span8" type="text" id="inputNombre" placeholder="{% trans "Name" %}">	
+		  		</div>
+			  	<div class="span5">
+			    	<label class="control-label span4" for="inputEmail">Email</label>
+		      		<input required name="email" class="span8" type="email" id="inputEmail" placeholder="Email">
+		  		</div>
+			</div>
+			<div class="row-fluid">
+			  	<div class="span5 offset1">
+			    	<label class="control-label span4" for="inputCumple">{% trans "Birthday" %}</label>
+		      		<input  name="cumpleanos" class="span8" type="text" id="inputCumple" placeholder="{% trans "Birthday" %}">
+		  		</div>
+			  	<div class="span5">
+			    	<label class="control-label span4" for="inputPais">{% trans "Country" %}</label>
+			      	<input name="pais" class="span8" type="text" id="inputPais" placeholder="{% trans "Country" %}">
+		  		</div>
+			</div>
+			<div class="row-fluid">
+			  	<div class="span10 offset1">
+			    	<label class="control-label span2" for="inputComent">{% trans "Comments" %}</label>
+			      	<textarea  name="comentarios" class="span10" id="inputComent" class="span6" placeholder="{% trans "Comments" %}"></textarea>
+			    	
+		  		</div>
+			</div>
+			<div class="row-fluid">
+			  	<div class="span11">
+			    	<button type="submit" class="btn btn-primary pull-right">{% trans "Send" %}</button>
+		  		</div>
+		  		<!--<div id="response"></div>-->
+			</div>
+			
+			
+		</form>
+	</section>
+	</div>
+ </div>
+{% endblock %}

@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-09 11:01-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: main/models.py:175
+msgid "View"
+msgstr ""
+
+#: main/templates/layout.html:126
+msgid "Home"
+msgstr "Inicio"
+
+#: main/templates/layout.html:127
+msgid "Shows"
+msgstr "Shows"
+
+#: main/templates/layout.html:133 main/templates/layout.html.py:134
+msgid "Boletos"
+msgstr ""
+
+#: main/templates/layout.html:135 main/templates/layout.html.py:165
+msgid "Gallery"
+msgstr "Galería"
+
+#: main/templates/layout.html:136 main/templates/layout.html.py:166
+msgid "Groups"
+msgstr "Grupos"
+
+#: main/templates/layout.html:137
+msgid "Location"
+msgstr "Ubicación"
+
+#~ msgid "Ubicación"
+#~ msgstr "Location"
+
+#~ msgid "Menu"
+#~ msgstr "Menú"
+
+#~ msgid "Souvenirs"
+#~ msgstr "Souvenirs"
+
+#~ msgid "Press Room"
+#~ msgstr "Sala de Prensa"
+
+#~ msgid "About Us"
+#~ msgstr "Nosotros"

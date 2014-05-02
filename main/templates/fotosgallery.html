@@ -1,0 +1,141 @@
+ 
+{% extends 'layout.html' %}
+{% load i18n %}
+{% block title %} Gallery{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/component.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/fancybox/jquery.fancybox.css?v=2.1.4"/>
+	<style type="text/css">
+			.grid li{
+				margin-bottom: 20px;
+				border: 1px solid white;
+				max-width: 300px;
+			}
+			
+			.cs-style-3 figcaption{
+				background-color: #1c1c1d;
+				height:60px;
+				padding: 15px;
+			}
+			.cs-style-3 figcaption a{
+				top: 0px;
+			}
+			.grid figcaption h3{
+				margin: 0;
+				font-weight: 400;
+				line-height: 16px;
+			}
+			h1{margin: 22px 0}
+			@media (max-width: 480px) {
+				.grid li{
+					margin-left: -15px;
+				}
+			}
+
+		</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="span10 offset1">
+			{% if request.LANGUAGE_CODE == "es" %}
+			<h1>Galería</h1>
+			<p class="pontano-16">Visita nuestros álbumes y conoce las diferentes experiencias y mundos a los que Backstage Cancún te puede llevar.</p>
+			{% else %}
+				<h1>Gallery</h1>
+				<p class="pontano-16">Visit our albums and discover all the different worlds and experiences where Backstage Cancun can take you.</p>
+			{% endif %}
+			<br>
+			<h3 class="pontano-22 text-left" style="color: #dabce9;margin-bottom:20px">Videos</h3>
+			<a class="tip4" href="{{MEDIA_URL}}{{video.Preview}}"></a>
+			<div class="row">
+				<ul class="grid cs-style-3 clearfix">
+				 {% for video in videos %}
+				 <li class="span3 text-center ">
+								<a href="{{video.videoURL}}" class="tip4 visible-desktop" >
+									<figure>
+									<img src="{{MEDIA_URL}}{{video.Preview}}" alt="img04">
+									<figcaption>
+										{% if request.LANGUAGE_CODE == "es" %}
+										<h3>{{video.titulo}}</h3>
+										{% else %}
+										<h3>{{video.tituloen}}</h3>
+										{% endif %}
+									</figcaption>
+								</figure>
+								</a>
+								<a href="{{video.videoURL}}" class="hidden-desktop" >
+									<figure>
+									<img src="{{MEDIA_URL}}{{video.Preview}}" alt="img04">
+									<figcaption>
+										{% if request.LANGUAGE_CODE == "es" %}
+										<h3>{{video.titulo}}</h3>
+										{% else %}
+										<h3>{{video.tituloen}}</h3>
+										{% endif %}
+									</figcaption>
+								</figure>
+								</a>
+							</li>
+			    {% endfor %}
+			</ul>
+		    </div>
+		    <hr style="border: 2px solid white;background: rgba(0, 0, 0, 0.75);border-bottom: 0;">
+		    <h3 class="pontano-22 text-left" style="color: #dabce9;margin-bottom:20px">{% trans "Photos" %}</h3>
+		    <div class="row">
+		    	<ul class="grid cs-style-3 clearfix">
+		    		{% for item in galeria %}
+				        {% if item.padre %}
+							<li class="span3 text-center ">
+								<a href="{{item.numero_categoria}}/">
+								<figure>
+									<img src="{{MEDIA_URL}}{{item.imagen}}" alt="img04">
+									<figcaption>
+										{% if request.LANGUAGE_CODE == "es" %}
+											<h3>{{item.categoria}}</h3>
+										{% else %}
+											<h3>{{item.categoriaen}}</h3>
+										{% endif %}
+									</figcaption>
+								</figure>
+								</a>
+								
+							</li>
+						{% endif %}
+			        {% endfor %}
+			    </ul>
+		    </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{STATIC_URL}}js/toucheffects.js"></script>
+<script src="{{STATIC_URL}}js/fancybox/jquery.fancybox.js"></script>
+<script> 
+$(document).ready(function(){
+	$(".tip4").click(function() {
+
+		var url=this.href.replace(new RegExp("watch\\?v=", "i"), 'v/')
+		url=url+"?autoplay=1"
+	$.fancybox({
+			'padding'		: 0,
+			'autoScale'		: false,
+			'transitionIn'	: 'none',
+			'transitionOut'	: 'none',
+			'title'			: this.title,
+			'width'		: 853,
+			'height'		: 480,
+			'href'			: url,
+			'type'			: 'swf',
+			'swf'			: {
+			   	 'wmode'		: 'transparent',
+				'allowfullscreen'	: 'true'
+			}
+		});
+
+	return false;
+});
+});
+</script>
+{% endblock %}

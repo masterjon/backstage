@@ -1,0 +1,185 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% block title %} Groups {% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/groups.css">
+{% endblock %}
+{% block content %}
+ <div class="jumbotron text-center hidden-phone">
+        <img src="{{STATIC_URL}}img/Grupos/foto.jpg">
+</div>
+<section class="mobile-img visible-phone"><img src="{{STATIC_URL}}img/Grupos/banner-grupos.jpg"></section>
+
+ <div class="container">
+    <div class="row">
+    <section class="span8 offset2 text-left">
+        <article class="text-justify">
+        {% if request.LANGUAGE_CODE == "es" %}
+        <h1>Eventos para grupos</h1>
+        <p class="pontano-16">El único lugar en Cancún que expresa el arte escénico y lo mejor de la interpretación artística internacional fusionada con la diversión inigualable de la vida nocturna.</p>
+        <p class="pontano-16">Deja tu evento en manos de nuestros servicios especializados y personalizados requeridos para las diferentes necesidades de grupos y convenciones, incentivos y congresos. Nuestros coordinadores de grupos lo asistirán con una gran variedad de servicios que van desde la organización de fiestas tema y actividades de integración, hasta cenas de gala.</p>
+        <p class="pontano-16">Contamos con una excelente ubicación, a 20 minutos del aeropuerto y del centro de Cancún; y a unos pasos de  los mejores  centros comerciales y restaurantes de la Zona.  </p>
+        </article>
+        <hr>
+        <article class="text-justify">
+        <h2>Especificaciones del lugar.</h2>
+        <ul id="spec" class="pontano-16">
+            <li>Capacidad para 450 personas.</li>
+            <li>200 mesas.</li>
+            <li>3 áreas privadas.</li>
+            <li>Pago con tarjetas de crédito: Visa, Mastercard, American Express.</li>
+            <li>4 barras.</li>
+            <li>Barra libre nacional: Vodka Smirnoff, Ron Bacardi, Tequila Ambhar, Whisky Jameson, Jugos y Refrescos.</li>
+            <li>Transportación One Way: Hotel –Backstage (previo  arreglo).</li>
+        </ul>
+        </article>
+        {% else %}
+                <h1>Groups and events</h1>
+        <p class="pontano-16">The only place in Cancún that shows art on stage and the best international artistic performances together with the amazing fun of Cancun´s night life.</p>
+        <p class="pontano-16">Leave your event in our hands as we can give special services that will match exactly the needs and expectations of groups, conventions and congresses. Our group coordinators will assist you with a wide range of services from theme parties and integration activities to gala dinners.</p>
+        <p class="pontano-16">We are conveniently located 20 minutes from the airport and Cancun´s downtown and just a few steps away from the main shopping malls and restaurants of the hotel zone.</p>
+        </article>
+        <hr>
+        <article class="text-justify">
+        <h2>Theatre characteristics</h2>
+        <ul id="spec" class="pontano-16">
+            <li>Up to 450 people capacity.</li>
+            <li>200 dinner tables.</li>
+            <li>3 private areas.</li>
+            <li>Credit card payment available (Visa, Mastercard and American Express).</li>
+            <li>4 bars.</li>
+            <li>National unlimited drinks: Smirnoff Vodka, Bacardi rum, Ambhar Tequila, Jameson Whiskey, juices and sodas.</li>
+            <li>Transportation One way: Hotel – Backstage (previous arrangement).</li>
+        </ul>
+        </article>
+        {% endif %} 
+        <hr>
+        <article>
+        <form id="contact-form" class="text-center">{% csrf_token %}
+            <div class="row-fluid">
+                <div class="span5 offset1">
+                    <label class="control-label span4" for="inputNombre">{% trans "Name" %}</label>
+                    <input name="nombre" class="span8 required" type="text" id="inputNombre" placeholder="{% trans "Name" %}"> 
+                </div>
+                <div class="span5">
+                    <label class="control-label span4" for="inputEmail">Email</label>
+                    <input name="email" class="span8 required email" type="email" id="inputEmail" placeholder="Email">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span5 offset1">
+                    <label class="control-label span4" for="inputEmpresa">{% trans "Company" %}</label>
+                    <input  name="empresa" class="span8" type="text" id="inputEmpresa" placeholder="{% trans "Company" %}">
+                </div>
+                <div class="span5">
+                    <label class="control-label span4" for="inputTelefono">{% trans "Phone" %}</label>
+                    <input name="telefono" class="span8" type="text" id="inputTelefono" placeholder="{% trans "Phone" %}">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span10 offset1">
+                    <label class="control-label span2" for="inputComent">{% trans "Comments" %}</label>
+                    <textarea name="comentarios" class="span10" id="inputComent" class="span6" placeholder="{% trans "Comments" %}"></textarea>
+                    
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span11">
+                    <div class="span4" id="response"></div>
+                    <button type="submit" class="btn btn-primary pull-right">{% trans "Send" %}</button>
+                </div>
+            </div>
+        </form> 
+        </article>  
+    </section>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<div style="display:none;" class="content-bottom clearfix">
+    <div class="left">
+        <h1>Facilidades</h1>
+        
+        <p>
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. 
+        </p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. 
+        </p>
+    </div>
+    <div class="right">
+        <div class="modulo-compra2">
+        <h2>Reserva tu lugar</h2>
+        <form method="post" action="" id="form-reserva">{% csrf_token %}
+            <div class="DivInputs" ><label>Nombre:</label><input class="required" id="nombre-reserva" type="text" name="nombre"></div>
+            <div class="DivInputs" ><label>Email:</label><input class="required email" id="email-reserva" type="text" name="email"></div>
+            <div class="DivInputs" ><label>Empresa:</label><input id="empresa-reserva" type="text" name="empresa"></div>
+            <div class="DivInputs" ><label>Teléfono:</label><input id="telefono-reserva" type="text" name="telefono"></div>
+            <div class="DivInputs" style="width: 30%;" ><label>Show:</label><select id="show-reserva" name="show"><option value="1">Deseo</option></select></div>
+            <div class="DivInputs" style="width: 30%;"><label>Fecha:</label><input class="required" id="fecha-reserva" type="text" name="fecha"></div>
+            <div class="DivInputs" style="width: 30%;"><label>Horario:</label><select id="horario-reserva" name="horario">
+                <option value="1">6 40</option>
+            </select></div>
+            <div class="DivInputs" style="width: 100%;">
+                <label>Comentarios:</label><textarea id="coments" name="comentarios"></textarea>
+            </div>  
+            <div class="DivInputs" style="width: 100%;">
+                <input type="hidden" name="cmd" value="form-groups">
+                <input type="image" alt="Buscar" src="{{STATIC_URL}}img/Reserva/enviar.png">
+            </div>
+        </form>
+        <span id="response"></span>
+         {% if errors %}
+        <ul class="server-validate">
+            {% for error in errors %}
+            <li>*{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+        </div>    
+    </div>
+</div>
+{% endblock %}
+{% block scripts%}
+    <script src="{{STATIC_URL}}js/validate.js"></script>
+    <script>
+    $(document).ready(function(){
+        $("#groups-link").addClass("active");
+       $('#contact-form').validate({
+        submitHandler: function(form) {
+          var form = $("#contact-form").serialize();
+            $.ajax('{% url 'groups' %}',{
+                data:form,
+                type:'post',
+                cache:false,
+                beforeSend:function(result){
+                    $("#response").html("<span>Sending ...</span>");
+                },
+                success:function(result){
+                
+                 $("#response").html(result);
+                 
+                $("#form-reserva").each(function(){
+                    this.reset();
+                                });
+                },
+                error:function(e){
+                    $("#response").html("Error");
+                  }
+            })
+
+
+        }
+       });
+
+    });
+    </script>
+{% endblock %}

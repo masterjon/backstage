@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block title %}Shows {% endblock %}
+{% block css %} <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/shows.css">
+
+ {% endblock %}
+{% block content %}
+<h1>Elije tu show</h1>
+	<div class="shows clearfix">
+		{% for show in shows %}
+		<div class="show-preview">
+			<a href="{% url 'show' show.slug %}"><img src="{{MEDIA_URL}}{{show.previewImg}}" width="360"></a>
+		</div>
+		{% endfor %}
+	</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+
+/* Large desktop */
+@media (min-width: 1200px) {
+td.dateBlock{
+    width: 80px
+}
+}
+h2{
+    margin: 15px 0;
+}
+form select{
+    color: black;
+}
+#list-shows thead td{
+font-size: 20px;
+font-weight: bold;
+font-family: "Oswald";
+font-weight: 400;
+}
+#list-shows tr{
+
+}
+
+#list-shows td{
+ text-align: center;
+ vertical-align: middle;
+
+}
+#list-shows .dateBlock >div{
+    background-color: #dddddd;
+
+padding: 0;
+text-align: center;
+vertical-align: middle;
+text-transform: uppercase;
+    color: black;
+    font-family: "Pontano Sans";
+    font-size: 15px;  
+}
+#list-shows .place,#list-shows .eventName{
+    font-weight: bold;
+}
+.dateBlock span.dots{
+    color: #acacac;
+    background-image: url('../img/cal_dot.png');
+background-position: center;
+background-repeat: no-repeat;
+width: 5px;
+}  
+abbr{
+    border-bottom:none;
+    border: none!important;
+    outline: none;
+}
+.findTix a{
+    color: #7dc6f0;
+    text-decoration: underline;
+}
+.text-warning{
+    font-size: 18px;
+}

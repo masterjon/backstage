@@ -1,0 +1,208 @@
+#contenido h1{
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 32px;
+    color: #380452;
+    margin: 5px;
+    text-align: center;
+}
+#contenido .content-bottom p{
+    text-align: justify;
+    margin: 10px 30px 5px 30px;
+    font-size: 14px;
+    font-family: 'Pontano Sans', sans-serif;   
+
+}
+.cycle-slideshow{
+    width: 100%;
+}
+.cycle-pager{
+        text-align: center; z-index: 500; position: absolute; top: 253px;right: 34px; overflow: hidden;
+}
+.cycle-pager span{
+      background-image: url("../img/Home/seleccion.png");
+    background-repeat: no-repeat;
+    float: left;
+    height: 21px;
+    width: 21px;
+    text-indent: -125px;
+    background-position: -20px 0;
+    cursor: pointer;
+
+}
+.cycle-pager span.cycle-pager-active{
+background-position: 0;
+}
+.content-bottom{
+
+
+}
+.content-bottom .left{
+float: left;
+width: 50%;
+text-align: center;
+}
+.content-bottom .right{
+float: right;
+width: 50%;
+padding-top: 24px;
+}
+.compra-home{
+    
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    
+    z-index: 100;
+}
+
+.modulo-compra{
+    
+    background-image: url('../img/Reserva/fondo.jpg');
+    width: 305px;
+    height: 217px;
+    background-repeat: no-repeat;
+    padding: 11px;
+}
+.modulo-compra h2,.modulo-compra2 h2{
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 10px;
+
+}
+.modulo-compra label{
+    margin-left: 25px;
+
+}
+.modulo-compra select{
+    float: left;
+    margin-left: 28px;
+}
+.modulo-compra input[type="text"]{
+    float: right;
+    margin-right: 37px;
+}
+.modulo-compra input[type="image"]{
+    float: right;
+    margin-right: 36px;
+}
+
+/*Grupos*/
+.modulo-compra2{
+   background-image: url("../img/Grupos/fondo_reserva.jpg");
+    background-repeat: no-repeat;
+    height: 217px;
+    padding: 11px;
+    width: 457px;
+    z-index: 100;
+}
+
+.modulo-compra2 .DivInputs{
+    width: 48%;
+    padding-left: 4px;
+    margin-bottom: 5px;
+}
+.modulo-compra2 label{
+    margin: 0;
+}
+.modulo-compra2 input[type="text"]{
+    float: right;
+    width: 170px;
+    border: 2px solid #E2E1DF;
+} 
+.modulo-compra2 #telefono-reserva,.modulo-compra2 #fecha-reserva{
+    width: 150px;
+}
+.modulo-compra2 #nombre-reserva, #empresa-reserva{
+    width: 150px;
+}
+.modulo-compra2 #show-reserva, .modulo-compra2 #fecha-reserva, .modulo-compra2 #horario-reserva{
+    width: 80px;
+    float: right;
+    margin-left: 0; 
+}
+     
+
+
+.modulo-compra2 input[type="image"]{
+    float: right;
+    margin-right: 14px;
+}
+.modulo-compra2 textarea{
+    float: right;    
+    margin-right: 14px;
+    width: 340px;
+    height: 40px;
+    border: 2px solid #E2E1DF;
+    resize: none;
+}
+label.error{display: none!important}
+input.error{
+    border: 1px solid #B10A08!important;
+}
+
+#response span{
+    color: green;
+    font-size: 12px;
+    position: absolute;
+    bottom: 34px;
+    right: 105px;
+}
+#response ul{
+    position: absolute;
+    bottom: 17px;
+    margin-left: 5px;}
+
+#response ul li{
+    font-size: 10px;
+    color: red;
+}
+
+#list-shows{
+    width: 600px;
+    margin: 0 auto;
+    float: none;
+    font-family: 'Pontano Sans',sans-serif;
+}
+#list-shows thead td{
+font-size: 14px;
+font-weight: bold;
+}
+#list-shows tr{
+    float: left;
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: center;
+}
+#list-shows td{
+    width: 25%;
+    float: left;
+}
+#list-shows tbody tr{
+    border-top: 1px dashed   #727272;
+    padding-top: 10px;
+}
+#list-shows .dateBlock >div{
+    background-color: #efefef;
+width: 55px;
+padding: 0;
+text-align: center;
+vertical-align: middle;
+text-transform: uppercase;
+margin-left: 47px;  
+}
+.dateBlock span.dots{
+    color: #acacac;
+    background-image: url('../img/cal_dot.png');
+background-position: center;
+background-repeat: no-repeat;
+width: 5px;
+}  
+abbr{
+    border-bottom:none;
+    border: none!important;
+    outline: none;
+}
+.hr-home{
+    margin: 40px 0 13px 0;
+}
+

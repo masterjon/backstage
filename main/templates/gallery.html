@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% block title %} Gallery {% endblock %}
+    {% block css %}
+		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/stapel.css" />
+		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/custom.css" /> 
+		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/fancybox/jquery.fancybox.css?v=2.1.4"/>
+	
+    {% endblock %}
+
+{% block content %}
+<div class="container">
+
+</div>
+<ul id="tp-grid" class="tp-grid">
+	 {% for item in galeria %}
+	 {% if item.padre %}
+	 	<img src="{{MEDIA_URL}}{{item.thumbnail}}">
+	 {% endif %}
+	 	<!--<li data-pile="{{item.categoria}}"> 
+        	<a class="fancybox" href="{{MEDIA_URL}}{{item.imagen}}">
+        		<span class="tp-info">{{item.nombre}}</span> 
+        		<img src="{{MEDIA_URL}}{{item.thumbnail}}">
+        	</a>
+    	</li>-->
+    {% endfor %} 
+</ul>
+{% endblock %}
+
+    {% block scripts %}
+        <script type="text/javascript">
+    $(document).ready(function(){
+        $("#gallery-link").addClass("active");
+    })
+    </script>
+    <script src="{{STATIC_URL}}js/jquery.stapel.js"></script>
+    <!--<script src="{{STATIC_URL}}js/fancybox/jquery.fancybox.pack.js?v=2.1.4"></script>
+    		<script type="text/javascript">	
+			$(function() {
+				var $grid = $( '#tp-grid' ),
+					$name = $( '#name' ),
+					$close = $( '#close' ),
+					$loader = $( '<div class="loader"><i></i><i></i><i></i><i></i><i></i><i></i><span>Loading...</span></div>' ).insertBefore( $grid ),
+					stapel = $grid.stapel( {
+						onLoad : function() {
+							$loader.remove();
+						},
+						onBeforeOpen : function( pileName ) {
+							$name.html( pileName );
+						},
+						onAfterOpen : function( pileName ) {
+							$close.show();
+							$("a.fancybox").fancybox();
+						}
+					} );
+
+				$close.on( 'click', function() {
+					$close.hide();
+					$name.empty();
+					stapel.closePile();
+
+				} );
+
+			} );
+			
+		</script>-->
+    {% endblock %}

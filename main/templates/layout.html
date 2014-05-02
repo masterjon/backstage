@@ -1,0 +1,238 @@
+ {% load i18n %}
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html class="ie ie6 ie-lt10 ie-lt9 ie-lt8 ie-lt7 no-js" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="ie ie7 ie-lt10 ie-lt9 ie-lt8 no-js" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="ie ie8 ie-lt10 ie-lt9 no-js" lang="en"> <![endif]-->
+<!--[if IE 9 ]>    <html class="ie ie9 ie-lt10 no-js" lang="en"> <![endif]-->
+<!--[if gt IE 9]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!-- the "no-js" class is for Modernizr. --> 
+<head>
+    <meta charset="utf-8">
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title> Backstage Cancún |{% block title %}Shows{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="{% block metatitle %} Backstage Cancún{% endblock %}">
+    <!-- Google will often use this as its description of your page/site. Make it good. -->
+    
+    <meta name="google-site-verification" content="kwHn-bGu3Tth_597cwLsXA1epUjIUXPhTd3kjsmtjus" />
+    <!-- Speaking of Google, don't forget to set your site up: http://google.com/webmasters -->
+    
+    <meta name="author" content="" />
+    <meta name="Copyright" content="" />
+    
+    <!--  Mobile Viewport Fix
+    http://j.mp/mobileviewport & http://davidbcalhoun.com/2010/viewport-metatag
+    device-width : Occupy full width of the screen in its current orientation
+    initial-scale = 1.0 retains dimensions instead of zooming out if page height > device height
+    maximum-scale = 1.0 retains dimensions instead of zooming in if page width < device width
+    -->
+    <!-- Iconifier might be helpful for generating favicons and touch icons: http://iconifier.net -->
+    <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon-backstage.png" />
+    <!-- This is the traditional favicon.
+         - size: 16x16 or 32x32
+         - transparency is OK -->
+         
+    <link rel="apple-touch-icon" href="_/img/apple-touch-icon.png" />
+    <!-- The is the icon for iOS's Web Clip and other things.
+         - size: 57x57 for older iPhones, 72x72 for iPads, 114x114 for retina display (IMHO, just go ahead and use the biggest one)
+         - To prevent iOS from applying its styles to the icon name it thusly: apple-touch-icon-precomposed.png
+         - Transparency is not recommended (iOS will put a black BG behind the icon) -->
+  <!--   <link href='http://fonts.googleapis.com/css?family=Averia+Sans+Libre' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Bubblegum+Sans' rel='stylesheet' type='text/css'> -->
+    <script defer src="{{STATIC_URL}}js/modernizr-2.6.2.dev.js"></script> 
+        <!-- Application-specific meta tags -->
+    <!-- Windows 8 -->
+    <meta name="application-name" content="" /> 
+    <meta name="msapplication-TileColor" content="" /> 
+    <meta name="msapplication-TileImage" content="" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="">
+    <meta name="twitter:site" content="">
+    <meta name="twitter:title" content="">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:url" content="">
+    <!-- Facebook -->
+    <meta property="og:title" content="" />
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+</head>
+<body class="hidden" >
+
+   <!--      <div class="redes-left">
+            <a class="twitter" href="#"><div ></div></a>
+            <a class="pinterest" href="#"><div ></div></a>
+            <a  class="maps" href="#"><div></div></a>
+        </div> -->
+       
+<!--         </div>
+        <div class="redes-right">
+            <a class="facebook" href="#"><div ></div></a>
+            <a class="correo" href="#"><div></div></a>
+            <a  class="telefonos" href="#"><div></div></a>
+        </div> -->
+
+
+    
+      <!-- Wrap the .navbar in .container to center it within the absolutely positioned parent. -->
+    {% if user.is_authenticated %}
+      <div  style="position:absolute;right:0;top:0;z-index:100;background-color:black;padding:4px 14px;border:1px solid white">
+       
+            <p class="Oswald-18" style="color:#DABCE9">User: <span style="color:white">{{user.username}} </span><a href="{% url 'logout' %}"><button class="btn btn-default">Logout</button></a></p>
+            
+            
+        
+      </div>
+      {% endif %}
+      <header id="header-container" class="container-fluid">
+            <div class="cortina-izquierda visible-desktop">
+                <a target="_blank" href="https://www.facebook.com/CancunBackstage"><div class="facebook"></div></a>
+                <a target="_blank" href="https://twitter.com/CancunBackstage"><div class="twitter"></div></a>
+
+                
+                <a target="_blank" href="http://www.youtube.com/channel/UCh6HnUPR-v5w_LrdBNAgTWg"><div class="youtube"></div></a>
+            </div>
+            <div class="cortina-derecha visible-desktop">
+                <a target="_blank" href="http://pinterest.com/cancunbackstage/"><div class="pinterest"></div></a>
+                <a target="_blank" href="http://instagram.com/cancunbackstage"><div class="instagram"></div></a>
+
+            </div>
+        <div id="logo-backstage" class="text-center">
+            <a href="/"><img src="{{STATIC_URL}}img/Header/logo.png" alt="Backstage Cancún"></a>
+        </div>
+        <div class="navbar text-center">
+            <!-- Responsive Navbar Part 1: Button for triggering responsive navbar (not covered in tutorial). Include responsive CSS to utilize. -->
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+            <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
+            <nav class="nav-collapse collapse">
+              <ul id="nav-menu" class="nav">
+                   <!--  <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li> -->
+                    <li id="shows-link"><a href="{% url 'home' %}#shows-list">{% trans "Shows" %}</a>
+                            <ul class="nav child-ul" id="menu-shows">
+                                  {% for show in shows %}
+                                    <li><a href="{% url 'show' show.slug %}">{{show.nombre}}</a></li>
+                                  {% endfor %}
+                            </ul>
+                    </li>
+                    <!--<li id="shows-link"><a href="#">{% trans "Boletos" %}</a></li>-->
+                    <!--<li id="shows-link"><a href="{% url 'tickets' %}">{% trans "Boletos" %}</a></li>-->
+                    <li id="gallery-link"><a href="{% url 'gallery' %}">{% trans "Gallery" %}</a></li>
+                    <li id="groups-link"><a href="{% url 'groups' %}">{% trans "Groups" %}</a></li>
+                    <li id="contact-link"><a href="{% url 'contact' %}">{% trans "Location" %}</a></li>
+                    <li id="contact-link"><a href="/blog">Blog</a></li>
+                    <li id="contact-link"><a href="{% url 'tour-virtual' %}">Tour Virtual</a></li>
+                    {% if request.LANGUAGE_CODE == "es" %}
+                    
+                    {% endif %}
+                    <li id="lang-item" >
+                        <form id="lang-form" action="/i18n/setlang/" method="post" class="">{% csrf_token %}
+                        <input name="next" type="hidden" value="{{request.path}}" />
+                        <span>Idioma: </span>
+                        <select name="language">
+                        {% for lang in LANGUAGES %}
+                            <option {%if LANGUAGE_CODE == lang.0 %} selected="selected" {% endif %} value="{{ lang.0 }}">{{ lang.1 }}</option>
+                        {% endfor %}
+                        </select>
+                        </form>
+                    </li>
+              </ul> 
+            </nav><!--/.nav-collapse -->
+        </div><!-- /.navbar -->
+      </header> <!-- /.container -->   
+    {% block content%}
+    {% endblock %}
+    <footer class="container-fluid">
+            <div class="container">
+                <div class="row-fluid">
+                <div class="span8 offset2">
+                <div class="span8 menu-bottom">
+                    <nav class="navbar text-center menu-bottom-principal">
+                        <ul class="nav">
+                            <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+                            <li style="display: none"><a href="#">{% trans "Tickets" %}</a></li>
+                            <li><a href="{% url 'gallery' %}">{% trans "Gallery" %}</a></li>
+                            <li><a href="{% url 'groups' %}">{% trans "Groups" %}</a></li>
+                            <li><a href="{% url 'contact' %}">{% trans "Location" %}</a></li>
+                            
+                        </ul>
+                    </nav><br>
+                    <div class="span12 menu-politicas">
+                       <nav class="navbar text-center">
+                            <ul class="nav">
+                                <li><a href="{% url 'privacity' %}">Políticas de privacidad</a></li>
+                                 <li><a href="{% url 'terms' %}">Políticas de cancelación</a></li> 
+                            </ul>
+                        </nav>
+   
+                </div>
+                <p class="span12 text-center" id="copyright">Derechos reservados Backstage &reg;</p>
+                </div>
+                    <div class="span4 text-center">
+
+                        <div class="span12 tequila-ambar">
+                            <a href="http://www.ambhar.com" target="_blank"><img src="{{STATIC_URL}}img/Footer/patrocinador.png " alt="Tequila Ambar" ></a>
+                        </div>
+                        <div class="span12">
+                            <p style="margin-top: 10px;">Evite el exceso</p><a target="_blank" href="http://alcoholinformate.org.mx" ><p style="color: white; text-decoration: none;">www.alcoholinformate.org.mx</p></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+       
+    </footer> 
+  {% load compress %}
+{% compress css inline  %}    
+    <!-- concatenate and minify for production -->
+    
+    <link rel="stylesheet" href="{{STATIC_URL}}css/reset.css">
+    <link href="{{STATIC_URL}}css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
+    <style>body{display:block!important;visibility:visible!important;}</style>
+{% endcompress %}
+    {% block css %}
+ 
+    {% endblock %}
+
+
+
+    <link href='http://fonts.googleapis.com/css?family=Oswald:300,400|Pontano+Sans|Nixie+One' rel='stylesheet' type='text/css'>
+   
+<script async src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% compress js %}
+
+    <script>window.jQuery || document.write('<script src="{{STATIC_URL}}js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+    <script async  src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+ {% endcompress %}
+   {% block scripts %}
+
+    {% endblock %}
+    <script async src="{{STATIC_URL}}js/functions.js"></script>
+
+
+    <!-- Asynchronous google analytics; this is the official snippet.
+     Replace UA-XXXXXX-XX with your site's ID and uncomment to enable.
+     -->
+<script>
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-43816449-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+    </body>
+</html>

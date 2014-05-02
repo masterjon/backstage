@@ -1,0 +1,291 @@
+{% extends 'layout.html' %}
+{% load cart_total %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/payment.css" /> 
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/fancybox/jquery.fancybox.css?v=2.1.4"/>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <span id="lblTimeRemaining" class="TimeRemaining">Tiempo restante:</span><br>
+    <table class="ClockTable" cellspacing="0" cellpadding="0">
+      <tbody><tr>
+        <td>
+            <img height="21" src="http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c0.gif" width="16" align="middle" name="d">
+            <img height="21" src="http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c4.gif" width="16" align="middle" name="e">
+            <img height="21" src="Applet/images/colon.gif" width="9" align="middle" name="f">
+            <img height="21" src="http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c3.gif" width="16" align="middle" name="g">
+            <img height="21" src="http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c3.gif" width="16" align="middle" name="h">
+        </td>
+      </tr>
+    </tbody>
+    </table>
+
+
+  	<div class="step" id="step-1">
+  	<h2>Revisión</h2>
+      <div class="row">
+        <div class="span8 offset2">
+
+        <h4 class="text-center">Por favor revisa tu compra antes de hacer el pago. Gracias.</h4>
+        <div class="row">
+          <div class="span2 offset2"><img src="{{MEDIA_URL}}{{show.show.previewImg}}" width="180" alt="Backstage Cancún">
+          </div>
+          <div class="span2 show-info pontano-16" >
+              Backstage Cancún,Q.R.<br>
+              Show: </b>{{show.show }}<br>
+              {{show.fecha|date:"D d M Y"}},{{show.fecha|date:"f a"}}
+          </div>
+        </div>
+        <div class="row order-summary">
+          <table class="table table-condensed">
+            <thead>
+            <tr>
+              <th>Sección</th>
+              <th>Mesa</th>
+              <th>Asiento</th>
+              <th>Tipo</th>
+              <th>Precio</th>
+            </tr>
+            </thead>
+            <tbody>
+              {% for item in request.session.cart %}
+              <tr>
+                <td>{{item.seccion}}</td>
+                <td>{{item.mesa}}</td>
+                <td>{{item.asiento}}</td>
+                <td>{{item.tipo}}</td>
+                <td class="item-price">{{item.price|currency}}</td>
+              </tr>
+              {% endfor %}
+              <tr >
+                <td colspan="5" id="total">
+                <span style="color: red;">CARGOS TOTALES:</span><span style="color:yellow"> {{subtotal|currency}} /  {{subtotal_pesos|currency:'mxn=True'}} </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        </div>
+      </div>
+  	</div>	
+  <div  class="step" id="step-2">
+  <h2>
+  Datos para tu reservación<br><span style="font-size: 12px;"> (Estos datos son los que se utilizarán para hacerle llegar la información de su reservación)</span>
+  </h2>    
+  <div class="row">
+    <div class="span6 offset3">
+      {% if user.is_authenticated %} 
+      <form method="post" id="doPayment" action="{% url 'confirm' %}" class="form-horizontal">
+      {% else %}
+      <form method="post" id="doPayment" action="{% url 'payment' %}" class="form-horizontal">
+      {% endif %}
+        <!-- VALIDAR FORMULARIO -->
+        {% csrf_token %}
+          <div class="control-group">
+                <label class="control-label">Nombre: </label> 
+                <div class="controls">
+                  <input id="nombre-reservacion" type="text" name="nombre" class="required">
+                </div>
+          </div>
+          <div class="control-group">
+               <label class="control-label">Apellidos:</label>
+                <div class="controls">
+                  <input id="apellido-reservacion" type="text" name="apellido" class="required">
+                 </div>
+          </div>
+          <div class="control-group">
+                <label class="control-label">Correo Electrónico:</label>
+                <div class="controls">
+                  <input id="email-reservacion" class="email required" type="text" name="email">
+                </div>
+          </div>
+          <div class="control-group">
+                <label class="control-label">Confirmación Correo Electrónico:</label>
+                <div class="controls">
+                  <input id="c_email-reservacion" equalto="#email-reservacion" class="email required" type="text" name="c_email">
+                </div>
+          </div>
+          <div class="control-group">
+                <label class="control-label">Teléfono:</label>
+                <div class="controls">
+                  <input id="telefono-reservacion" type="text" name="telefono">
+                </div>
+          </div>
+
+          <input type="hidden" name="show" value="{{show.id}}">
+
+          {% if user.is_authenticated %}  <!-- verificar opciones de permisos -->
+          <div class="control-group">
+            <label class="control-label">Vendedor:</label>
+            <div class="controls">
+              <select id="vendedores" name="vendedor">
+                <!--<option selected="selected" value="820">Publico General</option>-->
+                {% for vendedor in vendedores %}
+                {% if vendedor.id == 1018 %}
+                    <option selected="selected" value="{{vendedor.id}}">{{vendedor.nombre}} </option>
+                {% else %}
+                  <option value="{{vendedor.id}}">{{vendedor.nombre}}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          
+          <div style="display: none" class="control-group" id="ajax-acticipo">
+            <label class="control-label">¿Deja anticipo?: USD</label>
+            <div class="controls">
+              <input type="text" name="anticipo" value="0">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+
+              <button type="submit" class="btn btn-primary">Confirmar Reservación</button>
+            </div>
+          </div>
+          {% else %}
+          <div class="control-group">
+            <div class="controls">
+              <button type="submit" class="btn btn-success" >Pagar</button>
+            </div>
+          </div>
+          {% endif %}
+          <div></div>
+      
+      </form>
+    </div>
+  </div>
+  </div>
+  <!-- Pagos -->
+
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{STATIC_URL}}js/validate.js"></script>
+<script>
+$('#vendedores').change(function(){
+  var csrftoken=$("#doPayment").find('input[name="csrfmiddlewaretoken"]').val()
+    var command="view_seller";
+  vendedor= $(this).val();
+      $.ajax("{% url 'checkout'%}",{
+        data:{vendedor:vendedor,csrfmiddlewaretoken:csrftoken,cmd:command},
+        type:'post',
+        cache:false,
+        timeout:8000,
+        beforeSend: function(result){
+            //cl.show();
+        },
+        //add a timeout ---------------------------------------------------------
+        success: function(result){
+          if(result=='verdadero'){
+           $('#ajax-acticipo').show() 
+          }
+          else{
+            $('#ajax-acticipo').hide()
+          }       
+        },
+        error:function(result){
+           $('#ajax-acticipo').hide()
+        }
+    })
+
+
+})
+$('#doPayment').validate(
+
+  );
+
+var stopClock = false;
+c1 = new Image(); c1.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c1.gif';
+c2 = new Image(); c2.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c2.gif';
+c3 = new Image(); c3.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c3.gif';
+c4 = new Image(); c4.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c4.gif';
+c5 = new Image(); c5.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c5.gif';
+c6 = new Image(); c6.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c6.gif';
+c7 = new Image(); c7.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c7.gif';
+c8 = new Image(); c8.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c8.gif';
+c9 = new Image(); c9.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c9.gif';
+c0 = new Image(); c0.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/c0.gif';
+cb = new Image(); cb.src = 'http://inetvis.cineticket.com.mx/visInternetTicketing4/Applet/images/cb.gif';
+var up,down;var min1,sec1;var cmin2,csec2;
+var d = new Date();
+    var curr_date = d.getDate();
+    var curr_month = d.getMonth() + 1; //Months are zero based
+    var curr_year = d.getFullYear();
+    var curr_hour = d.getHours();
+    var curr_minutes = d.getMinutes();
+    var curr_seconds = d.getSeconds();
+var bookingDateTime = new Date(curr_year,curr_month,curr_date,curr_hour,curr_minutes,curr_seconds);
+var timeLimit = 300 ;
+var pauseTime;
+var currTime = new Date(curr_year,curr_month,curr_date,curr_hour,curr_minutes,curr_seconds);
+var timeLeft = bookingDateTime.getTime() + (timeLimit * 1000) - currTime.getTime();
+CountDown();
+function CountDown() {
+  var totSec, sec, totMin, minute;
+  if (timeLeft > 0) {
+      totSec = (Math.ceil(timeLeft/1000));
+      sec =    (totSec % 60);
+      totMin = (totSec - sec) / 60;
+      minute = (totMin % 60);
+      cmin2=minute;
+      csec2=0+sec;
+      DownRepeat();
+  } else {
+      location = '/timeout/{{show.id}}';
+  }
+}
+function StartAgain() {
+  var now = new Date();
+  timeLeft = 15000 - (now.getTime() - pauseTime);
+  if (timeLeft < 1000) {
+      location = '/timeout/{{show.id}}';
+      return;
+  }
+  var totSec = (Math.ceil(timeLeft/1000));
+  var sec =    (totSec % 60);
+  var totMin = (totSec - sec) / 60;
+  var minute = (totMin % 60);
+  cmin2=minute;
+  csec2=0+sec;
+  DownRepeat();
+}
+function DownRepeat() {
+  csec2--;
+  if(csec2==-1) {
+      csec2=59; cmin2--;
+  }
+  if(cmin2==-1) {
+      cmin2=59;
+  }
+  if (cmin2 <= 9) {
+      document.images.d.src = c0.src;
+      document.images.e.src = eval('c'+cmin2+'.src');
+  }
+  else {
+      document.images.d.src = eval('c'+Math.floor(cmin2/10)+'.src');
+      document.images.e.src = eval('c'+(cmin2%10)+'.src');
+  }
+  if (csec2 <= 9) {
+      document.g.src = c0.src;
+      document.images.h.src = eval('c'+csec2+'.src');
+  }
+  else {
+      document.images.g.src = eval('c'+Math.floor(csec2/10)+'.src');
+      document.images.h.src = eval('c'+(csec2%10)+'.src');
+  }
+  if((cmin2==0)&&(csec2==15)) {
+      var now = new Date();
+      pauseTime = now.getTime();
+      StartAgain();
+  }  else if((cmin2==0)&&(csec2==0)) {
+      location = '/timeout/{{show.id}}';
+  }  else if (!stopClock) down=setTimeout('DownRepeat()',1000);
+}
+
+</script>
+{% endblock %}

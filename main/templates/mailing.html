@@ -1,0 +1,135 @@
+<html>
+<head>
+	<script type="text/javascript" src="{{STATIC_URL}}js/jquery-1.9.1.min.js"></script>
+	<style type="text/css"></style>
+	<script type="text/javascript">
+	 jQuery(document).ready(function() {
+	 	$(".pase").click( function(){
+	 		var id = $(this).attr("id")
+	 		if(id ==1){
+	 			$("#acomp").fadeIn();
+	 		}else{
+	 			$("#acomp").fadeOut();
+	 		}
+	 	});
+	 	$('input, textarea').each(function(){
+			   // tomamos el valor actual del input
+			   var currentValue = $(this).val();
+			   // en el focus() comparamos si es el mismo por defecto, y si es asi lo vaciamos
+			   $(this).focus(function(){
+			      if( $(this).val() == currentValue ) {
+			         $(this).val('');
+			      };
+			   });
+			   // en el blur, si el usuario dejo el value vacio, lo volvemos a restablecer
+			   $(this).blur(function(){
+			      if( $(this).val() == '' ) {
+			         $(this).val(currentValue);
+			      };
+			   });
+			});
+	 	
+	 });
+</script>
+
+<style type="text/css">
+	.input{
+		background: url("{{STATIC_URL}}img/mailing/fondo_input.png") no-repeat scroll 0 0 transparent;
+    border: medium none;
+    height: 32px;
+    padding: 0 0 0 5px;
+    width: 512px;
+	}	
+	.form div{
+		margin: 0 0 10px 0;
+	}
+	textarea{
+		background: #ffffff; /* Old browsers */
+		background: -moz-linear-gradient(top,  #ffffff 0%, #f9f7f9 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f9f7f9)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top,  #ffffff 0%,#f9f7f9 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top,  #ffffff 0%,#f9f7f9 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top,  #ffffff 0%,#f9f7f9 100%); /* IE10+ */
+		background: linear-gradient(to bottom,  #ffffff 0%,#f9f7f9 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f9f7f9',GradientType=0 ); /* IE6-9 */
+		border: medium none;
+    box-shadow: 0 2px 5px #D5D5D5 inset;
+    height: 150px;
+    width: 512px;
+    padding: 15px 0 0 5px;
+    margin: 20px 0 0 0;
+	}
+</style>
+</head>
+	<body>
+		<form method="post" class="form">
+			{% csrf_token %}
+	<div style="background: url({{STATIC_URL}}img/mailing/fondo_form.jpg) repeat scroll 0 0 transparent;
+    box-shadow: 0 0 13px #DDDDDD;
+    height: 778px;
+    margin: auto;
+    width: 700px;">
+	<center>
+	<div>
+		<img src="{{STATIC_URL}}/img/mailing/logo.png">
+		<input type="text" name="nombre1" class="input" value="Nombre persona 1">   
+	</div>
+	<div>
+		<input type="text" name="nombre2" class="input" value="Nombre persona 2">
+	</div>
+	<!--<div style="background: none repeat scroll 0 0 #FFFFFF;
+    box-shadow: 0 1px 10px #CCCCCC inset;
+    margin: auto;
+    padding: 23px;
+    text-align: left;
+    width: 469px;">
+		<label>Asistir&aacute;s?</label>
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		Si
+		<input type="radio"  name="asistir" value="Si"/>
+	
+		No
+		<input type="radio"  name="asistir" value="No"/>
+		<br>
+		<br>
+		<label>Pase Sencillo</label>
+		<input type="radio" name="pase" class="pase" value="Pase sencillo" id="2"/>
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		&nbsp;
+		<label>Pase doble</label>
+		<input type="radio" name="pase" value="Pase doble" class="pase" id="1" />
+		<div style="display: none;" id="acomp">
+		<br>
+		<br>
+		Datos de Acompa&ntilde;ante<br>
+		<label>Nombre:</label>
+		<input type="text" name="nombre2" />
+		
+		
+		
+	</div>
+	</div>-->
+	
+	<div> 
+
+		<textarea name="observaciones">Comentarios Adicionales</textarea>
+	</div>
+	<input type="submit" value="Enviar" name="enviar">
+	<br>
+		<br>
+		<div>
+					</div>
+	</center>
+</div>
+</form></body></html>

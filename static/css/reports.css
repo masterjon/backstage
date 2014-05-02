@@ -1,0 +1,30 @@
+
+.table thead th {
+	padding: 0;
+	vertical-align:middle;
+	text-align:left;
+
+}
+.table tfoot td{
+	font-weight: bold;
+}
+select ,option{
+	color: black;
+}
+#report-table{
+	margin-top: 30px;
+}
+#csrftoken{
+width: 100px;
+float: right;
+margin-right: 100px;
+}
+#csrftoken input[type="submit"]{
+	color: black;
+}
+.table-title{
+	font-size: 16px;
+	text-align: center!important;
+	padding-bottom: 15px!important;
+
+}

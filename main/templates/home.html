@@ -1,0 +1,85 @@
+{% extends 'layout.html' %}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/home.css" />
+{% endblock %}
+{% block content %}
+<section id="myCarousel" class="carousel slide hidden-phone">
+    <div id="call2action">
+        <h1>Consigue tus <br><span class="tbig">Boletos</span></h1>
+        <p class="pontano-16">¡No te pierdas de los mejores shows en Cancún!</p>
+        <div class="text-center"><a class="pontano-16" href="#"><button type="button" class="btn btn-primary">Reserva aquí</button></a></div>
+    </div>
+    <div class="carousel-inner">
+        {% for slide in slides %}
+            {% if forloop.first %}
+                <div class="item active" style="background-image:url('{{MEDIA_URL}}{{slide.imagen}}')">
+            {% else %}
+            <div class="item" style="background-image:url('{{MEDIA_URL}}{{slide.imagen}}')">
+            {% endif %}
+        </div>
+        {% endfor %}
+        <!--<div class="item active" style="background-image:url('{{STATIC_URL}}/img/Home/slide1.jpg')">
+          
+        </div>
+        <div class="item" style="background-image:url('{{STATIC_URL}}/img/Home/slide2.jpg')">
+        </div>
+        <div class="item" style="background-image:url('{{STATIC_URL}}/img/Home/slide3.jpg')">
+        </div>-->
+    </div>
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
+</section><!-- /.carousel -->
+<section class="mobile-img visible-phone"><img src="{{STATIC_URL}}img/Home/banner-home.jpg"></section>
+<div class="container"></div>
+<section class="container">
+<div class="row">
+   <article class="span8 offset2 text-left">
+    {% if request.LANGUAGE_CODE == "es" %}
+        <h1>¡Bienvenido a Backstage!</h1>
+        <p class="pontano-16">Backstage se presenta como una alternativa de entretenimiento en Cancún que ofrece una experiencia que no podrás encontrar en otro lugar.</p>
+		<p class="pontano-16">Al entrar tendrás una experiencia única donde no sólo vivirás un espectáculo de calidad mundial, sino también disfrutarás de un delicioso menú acompañado de una amplia gama de bebidas nacionales e internacionales que complementarán el show en un auténtico deleite para todos tus sentidos.</p>
+    {% else %}
+        <h1>Welcome to Backstage!</h1>
+        <p class="pontano-16">Backstage is an alternative for entertainment in Cancun which offers a unique experience that you will not find in any another place.</p>
+        <p class="pontano-16">When you get inside Backstage you will have a unique experience where you will not only live a world quality show but will also enjoy a delicious menu with a wide range of national and international beverages that complement the show in an real delight for all your senses.</p>
+    {% endif %}
+
+        <hr class="hr-home">
+    </article>
+    <div class="row">
+    <article id="shows-list" class="span8 offset2 text-left">
+        {% if request.LANGUAGE_CODE == "es" %}
+        	<h2>Nuestros Shows</h2>
+        	<p class="pontano-16">Visitar Backstage Cancún significa vivir una experiencia inolvidable, cada uno de nuestros show es tan diferente como único y te llevarán a mundos distintos que te llenarán de asombro.
+            </p>
+        {% else %}
+            <h2>Our Shows</h2>
+            <p class="pontano-16">To visit Backstage Cancun means to live an unforgettable experience, each one of our shows is as different as unique and will take you to different worlds that will fill you with wonder.
+            </p>
+        {% endif %}
+        {% for show in shows %}
+            {% if not forloop.counter|divisibleby:"2" %}
+                {% if forloop.last %}
+                <div class="row">
+                    <div class="span4 offset2"><a href="{% url 'show' show.slug %}"><img src="{{MEDIA_URL}}{{show.previewImg}}"></a></div>
+                </div>
+                {% else %}
+                <div class="row">
+                    <div class="span4"><a href="{% url 'show' show.slug %}"><img src="{{MEDIA_URL}}{{show.previewImg}}"></a></div>
+                {% endif %}
+            {% else %}
+                <div class="span4"><a href="{% url 'show' show.slug %}"><img src="{{MEDIA_URL}}{{show.previewImg}}"></a></div>
+             </div>
+             {% endif %}
+        {% endfor %}
+    </article>    	
+</section>
+{% endblock %}
+{% block scripts%}
+    <script src="{{STATIC_URL}}js/cycle2.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("#shows-link").addClass("active");
+    })
+    </script>
+{% endblock %}

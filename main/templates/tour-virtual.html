@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block title %} Tour Virtual {% endblock %}
+    {% block css %}
+		<style type="text/css">
+			#tour-frame{
+				margin-top:40px;
+				border:2px solid white;
+				width: 100%;
+				height: 400px;
+			}
+		</style>
+    {% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="span10 offset1 text-center">
+			<h1>Tour Virtual</h1>
+			<iframe id="tour-frame" src="http://www.toursvirtuales360.com/BackstageCancun/VirtualTour.html"></iframe>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}
+

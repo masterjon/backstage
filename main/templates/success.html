@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/payment.css" /> 
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/fancybox/jquery.fancybox.css?v=2.1.4"/>
+<style>
+table{
+	width: 100%;
+}
+.container img{
+	display: none!important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			{{mailing}}
+			<a style="float: right;background-color: #333;color: yellow;padding: 10px 15px 10px;" href="{% url 'tickets' %}">FINALIZAR</a>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

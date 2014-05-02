@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/login.css">
+{% endblock %}
+{% block content %}
+ <div class="container">
+
+  
+ 
+
+  <section class="form-signin">
+    {% if user.is_authenticated %}
+      <h2>Welcome, {{ user.username }}.</h2>
+      <a href="{% url 'logout'%}"><button class="btn" >Logout</button></a>
+    {% else %}
+      <form action="{% url 'django.contrib.auth.views.login' %}" method="post" >{% csrf_token %}
+         {% if form.errors %}
+        <p class="text-warning">Sorry, that's not a valid username or password</p>
+        {% endif %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" class="input-block-level" name="username" value=""  placeholder="Email address">
+        <input type="password" class="input-block-level" name="password" value=""  placeholder="Password">
+
+        
+          <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+
+        <input type="hidden" name="next" value="{% url 'tickets' %}" />
+      </form>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+
+

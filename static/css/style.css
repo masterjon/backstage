@@ -1,0 +1,357 @@
+/* Apply a natural box layout model to all elements: http://paulirish.com/2012/box-sizing-border-box-ftw/ */
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+.chromeframe {position: absolute; top: 0;}
+
+/* Ok, this is where the fun starts.
+-------------------------------------------------------------------------------*/
+
+/* A Linux- and Windows-friendly sans-serif font stack: http://prospects.mhurrell.co.uk/post/updating-the-helvetica-font-stack */
+body {font: 13px Helmet, Freesans, sans-serif;}
+
+/* Using local fonts? Check out Font Squirrel's webfont generator: http://www.fontsquirrel.com/tools/webfont-generator */
+
+/* We like off-black for text. */
+body, select, input, textarea {color: #FFF;}
+
+
+/* Custom text-selection colors (remove any text shadows: http://twitter.com/miketaylr/status/12228805301) */
+::-moz-selection{background: #fcd700; color: #fff; text-shadow: none;}
+::selection {background: #fcd700; color: #fff; text-shadow: none;} 
+
+/*  j.mp/webkit-tap-highlight-color */
+a:link {-webkit-tap-highlight-color: #fcd700;} 
+
+ins {background-color: #fcd700; color: #000; text-decoration: none;}
+mark {background-color: #fcd700; color: #000; font-style: italic; font-weight: bold;}
+
+/* Mozilla dosen't style place holders by default */
+input:-moz-placeholder { color:#a9a9a9; }
+textarea:-moz-placeholder { color:#a9a9a9; }
+
+textarea{color: black;}
+
+/* Print styles!
+-------------------------------------------------------------------------------*/
+@media print {
+
+
+
+}
+
+
+/* Media queries!
+-------------------------------------------------------------------------------*/
+
+/* Large desktop */
+@media (min-width: 1200px) {
+
+.margin0{
+
+	margin: 0;
+}
+
+
+}
+ 
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+
+#lang-item{margin-top: 0}
+}
+ 
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {}
+ 
+/* Landscape phones and down */
+@media (max-width: 480px) {}
+body{
+    background-color: black;
+	background-image: url('../img/bg.png');
+    background-repeat: repeat-x;
+}
+#header-container{
+	border-bottom: 2px solid white;
+	background: rgba(0, 0, 0, 0.75);
+}
+#logo-backstage{margin:10px 0 25px 0}
+
+#nav-menu{
+	font-family: "Nixie One","Helvetica";
+	font-size: 15px;
+	font-weight: bold;
+	border-top: 2px solid #fff;
+	margin-bottom: 0px;
+}
+
+#header-container .navbar{
+	margin-bottom: 0px;
+	position: relative;
+	z-index: 200;
+}
+#lang-form{
+	margin-bottom: 0;
+}
+
+#lang-form select{
+	padding: 1px 0;
+	height: 19px;
+	font-size: 12px;
+	margin-top: 10px;
+	color: #000;
+	width: 85px;
+
+}
+#lang-form span{
+	color: #fff;
+	font-size: 14px;
+	font-family: "Pontano Sans";
+	
+}
+#lang-item{
+     position: absolute;
+right: 0px;
+margin-top: -37px;
+}
+#call2action{
+	background: rgba(0, 0, 0, 0.75);
+	position: absolute;
+	left: 20%;
+	/*margin-top: 2px;*/
+	display: none;
+	z-index: 10;
+	color: #fff;
+	width: 220px;
+	height: 299px;
+	padding: 8px 25px;
+}
+#call2action h1{
+	font-family:"Oswald";
+	font-size: 36px; 
+	font-weight: 300;
+	color: white;
+	line-height: 50px;
+	margin: 20px 0;
+	text-align: center;
+	text-shadow:3px 2px 1px #000000;
+}
+#call2action h1 .tbig{
+	font-size: 60px;
+}
+#call2action .pontano-16{
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 15px;
+	font-weight: bold;
+	text-shadow:3px 2px 1px #000000;
+}
+#call2action a.pontanto-16{
+	font-weight: bold;
+	text-shadow:3px 2px 1px #000000;
+}
+#myCarousel,.jumbotron{
+	border-bottom: 2px solid white;
+	background: rgba(0, 0, 0, 0.75);
+}
+.navbar .nav {
+	float: none;	
+	display: inline-block;
+}
+
+h2,h1{
+	font-family: "Oswald";
+	font-size: 32px;
+	color: #dabce9;
+	font-weight: 400;
+	text-align: center;
+}
+.pontano-22{
+	font-family: "Pontano Sans";
+	font-size: 22px;
+	line-height: 20px!important;
+}
+.pontano-16{
+	font-family: "Pontano Sans";
+	font-size: 16px;
+	line-height: 20px!important;
+}
+.pontano-18{
+	font-family: "Pontano Sans";
+	font-size: 18px;
+}
+.Oswald-16{
+	font-family:"Oswald";
+	font-size: 18px;
+}
+.Oswald-18{
+	font-family:"Oswald";
+	font-size: 18px;
+}
+.mobile-img img{
+	width: 100%
+}
+
+footer{
+	background-color: #B20A09;
+	font-family: "Pontano Sans";
+	font-size: 14px;
+
+	margin-top: 80px;
+}
+footer .menu-bottom-principal li + li{
+	list-style: circle;
+}
+ .carousel {
+      margin-bottom: 35px;
+}
+
+.carousel .container {
+  position: relative;
+  z-index: 9;
+}
+
+.carousel-control {
+  height: 80px;
+  margin-top: 0;
+  font-size: 120px;
+  text-shadow: 0 1px 1px rgba(0,0,0,.4);
+  background-color: transparent;
+  border: 0;
+  z-index: 10;
+}
+
+.carousel .item {
+  height: 299px;
+  width: 100%;
+  background-position: center;
+}
+
+.carousel img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 299px;
+}
+#shows-list p{
+	margin-bottom: 35px;
+}
+a.phone-link{
+	color: white;
+	text-decoration: underline;
+}
+
+.jumbotron img{
+width: 100%;
+}
+.cortina-izquierda, .cortina-derecha{
+	width: 419px;
+height: 184px;
+position: absolute;
+padding: 44px;
+
+}
+.cortina-izquierda{
+background-image: url('../img/Header/cortina-izquierda.png');
+left: 0;
+
+}
+.cortina-derecha{
+background-image: url('../img/Header/cortina-derecha.png');
+right: 0;
+}
+footer .navbar{
+	margin-bottom: 0;
+}
+
+#menu-shows{
+	display: none;position:absolute;background:rgba(0, 0, 0, 0.75);width: 145px;
+}
+#menu-shows li{
+width: 100%;
+text-align: center;
+
+}
+.nav > li > a:hover, .nav > li > a:focus{
+	background-color: transparent;
+}
+
+footer .nav li:hover, footer .nav a:hover, footer .nav li:active, footer .nav a:active{
+	background: none;
+}
+.youtube{
+	  float: left;
+    height: 59px;
+    margin: 5px 0 0 5px;
+    width: 52px;
+} 
+.facebook{
+width: 52px;
+float: left;
+margin: 5px 0 0 79px;
+height: 59px;
+}
+.twitter{
+width: 52px;
+float: left;
+margin: 20px 0 0 6px;
+height: 59px;
+} 
+.pinterest{
+	width: 52px;
+	float: left;
+	height: 59px;
+	margin:10px 0 0 95px
+}  
+.instagram{
+	width: 52px;
+	float: left;
+	height: 59px;
+	margin-left:65px;
+}
+.icon-remove-sign{
+	cursor: pointer;
+}
+footer li{
+	float: none!important;
+	display: inline-block;
+	line-height: 0px;
+}
+footer li + li{
+	list-style: circle;
+padding-left: 0px;
+border-left: 1px solid white;
+}
+footer li a{
+	padding: 10px 25px 10px;
+}
+.menu-politicas{
+	margin-top: 20px;
+}
+.menu-politicas ul li{
+	line-height: 0px;
+	margin-left: 0;
+}
+.menu-politicas li + li{
+list-style: none;
+border-left: 1px solid #ffffff;
+padding-left: 10px;
+}
+
+#copyright{
+	margin-top: 20px;
+}
+.tequila-ambar img{
+	width: 185px;
+
+}
+.menu-bottom{
+	padding-top: 20px;
+}
+
+
+@media (max-width: 1200px) {
+.menu-politicas li + li{
+	border-left: none!important;
+}
+}

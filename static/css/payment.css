@@ -1,0 +1,62 @@
+
+.step{
+
+width: 99%;
+margin-bottom: 20px;
+padding: 5px;
+}
+#step-1 table ,#step-1 table tr{
+	width: 100%;
+
+}
+#step-1 table tr > td{
+
+	width: 310px;
+	text-align: center;
+}
+#totales tr{
+	border-top: 1px solid #eaeaea;
+	border-bottom: 1px solid #eaeaea;
+
+}
+.item-boleto{
+	background-color: #eaeaea;
+margin-bottom: 10px;
+text-align: center;
+border: 1px solid #727272;
+color: #4A2A76;
+}
+.item-boleto div{
+	margin-bottom: 2px;
+}
+#step-2 table td{
+
+width: 100%;
+margin-bottom: 6px;
+}
+select{color: black;}
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"]{
+	height: 30px;
+}
+.show-info{
+	margin-top: 25px;
+	font-weight: bold;
+}
+.order-summary{
+	margin-top: 40px;
+}
+.order-summary table thead th{
+	text-align: center;
+	font-family: "Oswald";
+	font-size: 20px;
+}
+.order-summary table tbody td{
+		font-family: "Pontano Sans";
+		font-size: 16px;
+
+}
+.order-summary #total{
+		font-family: "Oswald";
+	font-size: 16px;
+	text-align: right;
+}

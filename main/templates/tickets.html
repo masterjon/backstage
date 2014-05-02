@@ -1,0 +1,105 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% block title %} Tickets
+{% endblock %}
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/tickets.css" /> 
+{% endblock %}
+
+{% block content %}
+
+<section class="container text-center">
+	{% if request.LANGUAGE_CODE == "es" %}
+		<h2 >Boletos y fechas de eventos de backstage Cancún </h2>
+	{% else %}
+		<h2 >Tickes and events of Backstage Cancún</h2>
+	{% endif %}
+	<div class="row">
+		<form action="{% url 'tickets' %}" method="post" class="">{% csrf_token %}
+		
+			<div class="span3 offset2">
+				<label for="selectShow">Show</label>
+				<select id="selectShow" name="show" class="">
+					<option selected="selected" value="">Todos</option>
+					{% for show in shows %}
+						<option value="{{show.id}}">{{show.nombre}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="span3">
+				<label for="selectFecha">{% trans "Date" %} </label>
+				<select id="selectFecha" name="fecha" class="">
+					<option selected="selected" value="">Todos</option>
+					<option value="01">Enero</option>
+					<option value="02">Febrero</option>
+					<option value="03">Marzo</option>
+					<option value="04">Abril</option>
+					<option value="05">Mayo</option>
+					<option value="06">Junio</option>
+					<option value="07">Julio</option>
+					<option value="08">Agosto</option>
+					<option value="09">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+					<option value="12">Diciembre</option>
+				</select>
+			</div>
+			<div class="span2"><label class="invisible">{% trans "Search" %}</label><button type="submit" class="btn btn-primary">{% trans "Search" %}</button></div>
+		</form>
+	</div>
+	<div class="row">
+		<div class="span10 offset1">
+		<table id="list-shows" class="table">
+		<thead>
+			<tr>
+				<td>{% trans "Time" %}/{% trans "Date" %}</td>
+				<td>{% trans "Place" %}</td>
+				<td>Show</td>
+
+			</tr>
+		</thead>
+		{% for ticket in tickets %}
+			<tr itemprop="events" itemscope="itemscope" itemtype="http://schema.org/Event">
+				<td scope="row" class="dateBlock" nowrap="nowrap"><div class="month">
+					<span class="dots">&nbsp;</span> <abbr title="{{ticket.fecha|date:"F"}}">{{ticket.fecha|date:"M"}} </abbr> <span class="dots">&nbsp;</span></div>
+					<div class="date">{{ticket.fecha|date:"d"}}</div>
+					<div class="day"><abbr title="{{ticket.fecha|date:"l"}}">{{ticket.fecha|date:"D"}}</abbr></div>
+					<time itemprop="startDate" datetime="2013-07-03T21:00:00-05:00"></time></td>
+				<td class="place pontano-16">
+					{{ticket.fecha|date:"P"}}<br>
+					<span itemprop="location" itemscope="itemscope" itemtype="http://schema.org/EventVenue">
+							<span itemprop="name">Backstage</span>
+						<span itemprop="address" itemscope="itemscope" itemtype="http://schema.org/PostalAddress">     
+							<span itemprop="addressLocality">{% trans "Cancun" %}</span>.
+						</span>
+					</span>	
+				</td>
+				<td class="eventName pontano-16"><span itemprop="name" class="eventName">{{ticket.show}} </span><br></td>
+
+				<td class="findTix">
+					{% if request.LANGUAGE_CODE == "es" %}
+						<a href="{% url 'booking' ticket.id %}">Busca tus boletos&nbsp;»</a>
+					{% else %}
+						<a href="{% url 'booking' ticket.id %}">Search your tickets&nbsp;»</a>
+					{% endif %}	
+				</td>
+			</tr>
+		{% empty %} 
+			<tr>
+					{% if request.LANGUAGE_CODE == "es" %}
+						<td colspan="4" class="text-warning">No hay resultados para tu búsqueda</td>
+					{% else %}
+						<td colspan="4" class="text-warning">No hay resultados para tu busqueda</td>
+					{% endif %}	
+				
+			</tr>
+		{% endfor %}
+		</table>
+
+	</div>
+	</div>
+
+</section>
+
+{% endblock %}
+

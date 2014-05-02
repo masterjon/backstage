@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/home.css" />
+{% endblock %}
+{% block content %}
+
+<div class="cycle-slideshow clearfix " >
+    {% for slide in slides %}
+        <img src="{{MEDIA_URL}}{{slide.imagen}}">
+    {% endfor %}
+    <div class="cycle-pager"></div>
+</div>
+<div class="modulo-compra compra-home">
+    <h2>Compra Online</h2>
+      <form method="post" action="" id="form-reserva">
+            <div class="DivInputs"><label>Nombre:</label><input id="nombre-reserva" type="text" name="nombre"></div>
+            <div class="DivInputs"><label>Email:</label><input id="email-reserva" type="text" name="email"></div>
+            <div class="DivInputs"><label>Fecha:</label><input id="fecha-reserva" type="text" name="fecha"></div>
+            <div class="DivInputs"><label>Horario:</label><select id="horario-reserva" name="horario">
+                <option value="1">6 40</option>
+            </select></div>
+            <div class="DivInputs">
+                <input type="image" alt="Buscar" src="{{STATIC_URL}}img/Reserva/buscar.png">
+            </div>
+    </form>
+</div>
+<div class="content-bottom clearfix">
+    <div class="left">
+        <img src="{{STATIC_URL}}img/Home/foto.jpg">
+    </div>
+    <div class="right">
+        <h1>¿Qué es Backstage?</h1>
+        <p>
+            Backstage es un recinto especializado en entretenimiento de nivel mundial donde los asistentes vivirán una experiencia única e inimaginable con posibilidad de cenar un delicioso menú y tener la mejor barra libre de Cancún.
+        </p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        </p>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts%}
+    <script src="{{STATIC_URL}}js/cycle2.js"></script>
+{% endblock %}

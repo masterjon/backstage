@@ -1,0 +1,97 @@
+h1{
+	/*text-align: left!important;
+	padding: 20px 84px;
+	margin: 0px!important;*/
+}
+.shows{
+	background-image: url('../img/Shows/escenario.jpg');
+	background-repeat: no-repeat;
+	background-position: 0 bottom;
+}
+.show-preview{
+	float: left;
+	width: 50%;
+	text-align: center;
+}
+.artista-item .more-info {
+position: absolute;
+display: none;
+top: 185px;
+width: 100%;
+background-color: #000000;
+opacity: 0.8;}
+.artista-item{
+	position: relative;
+}
+
+.artista-item .more-info .name h2{
+font-size: 16px;
+margin:0;
+}
+.artista-item:hover .more-info {
+display: block!important;
+}
+
+.artista-item .more-info-button{
+position: absolute;
+right: 10px;
+font-size: 20px;
+text-decoration: none;
+display: inline-block;
+color: #ffffff;
+width: 23px;
+height: 22px;
+padding: 8px 16px 12px 4px;
+line-height: 4px;
+-webkit-border-radius: 20px;
+border-radius: 20px;
+border: 2px solid #ffffff;
+top: 10px;
+text-align: center;
+cursor: pointer;
+}
+.more-details {
+display: none;
+clear: both;
+padding-top: 5px;
+padding-bottom: 25px;
+background-image: url("../img/bg2.png");
+}
+.artista-item .more-info-button.opened {
+    transform: rotate(45deg);
+    -moz-transform:rotate(45deg);
+    -webkit-transform:rotate(45deg);
+    -o-transform:rotate(45deg);
+    -ms-transform:rotate(45deg);
+    filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=1.5);
+}
+.more-details-inner {
+padding: 0 30px;
+}
+.banner-show{
+	border-bottom: 2px solid white;
+	background: rgba(0, 0, 0, 0.75);
+}
+
+.banner-show img{
+height: 299px;
+width: 100%;
+}
+#call2action{
+	margin-top: 0px;
+	height: 299px;
+}
+#call2action h1{
+padding: 0;
+}
+.item{
+	height: 299px;
+width: 100%;
+background-position: center
+}
+
+.video{width: 100%}
+.artista-item{
+	margin-bottom: 30px;
+
+}

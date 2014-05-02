@@ -1,0 +1,167 @@
+{% load tz %}
+<style type="text/css">
+body{
+  margin: 0 auto;
+  width: 300px;
+}
+</style>
+<table id="seleccion" width="300" align="center" border="0" cellpadding="0" cellspacing="0" bgcolor="#ffffff">
+        <tbody>
+          	<tr>
+            	<td colspan="2" style="text-align: center;">
+	            	<img moz-do-not-send="true"
+					         src="http://backstagecancun.com/static/img/logo-backstage_negro.png"
+	                 alt="Confirmación de compra"
+	                 width="120" height="54">
+     			</td>
+    	   	   </tr>
+    	 	        <tr>
+               	<td colspan="2" style="
+              		height: 25px; color:#000000; font-weight: bolder;
+              		font-size: 12px; font-family: Helvetica, Arial,
+              		sans-serif;text-align: center;">BACKSTAGE CANCÚN
+              	</td>
+          	</tr>
+          	<tr>
+            	<td colspan="2" style="
+              		height: 25px; color:#000000; font-weight: bolder;
+              		font-size: 12px; font-family: Helvetica, Arial,
+              		sans-serif;text-align: center;">Blvd. Kukulcán L. 32 Secc. A 2a. Etapa, Zona Hotelera, CP 77500, Cancún, Quintana Roo, México
+                  Operadora de Espectáculos del Caribe Mexicano, S.A. de C.V.
+              	</td>
+          	</tr>
+            <tr>
+              <td colspan="2" style="
+                  height: 25px; color:#000000; font-weight: bolder;
+                  font-size: 12px; font-family: Helvetica, Arial,
+                  sans-serif;text-align: center;border-bottom: 2px dotted #000000;padding-bottom: 10px">RFC: OEC 121206 J40 
+                </td>
+            </tr>
+            <tr>
+              <td colspan="2" style="
+                  height: 25px; color:#000000; font-weight: bolder;
+                  font-size: 12px; font-family: Helvetica, Arial,
+                  sans-serif;text-align: left;
+                  ">
+                  Reservación: {{orden.clave_reservacion}}
+                </td>
+            </tr>
+          	<tr>
+            	<td colspan="2" style="
+              		height: 25px; color:#000000; font-weight: bolder;
+              		font-size: 12px; font-family: Helvetica, Arial,
+              		sans-serif;text-align: left;
+              		">
+              		CV: {{orden.vendedor.nombre}}
+              	</td>
+          	</tr>
+          	<tr>
+          		<td>
+          			<table style="width: 300px;" valign="top" align="left">
+          				<tbody>
+          					<tr>
+          						<td colspan="2" style="
+				              		height: 25px; color:#000000; font-weight: bolder;
+				              		font-size: 12px; font-family: Helvetica, Arial,
+				              		sans-serif;text-align: center;
+				              		">Show: {{orden.show.nombre}}
+				              	</td>
+          					</tr>
+          					<tr>
+          						<td colspan="2" style="
+				              		height: 25px; color:#000000; font-weight: bolder;
+				              		font-size: 12px; font-family: Helvetica, Arial,
+				              		sans-serif;text-align: right;
+				              		">Fecha: {{orden.fecha_show}}
+				              	</td>
+          					</tr>
+          				</tbody>
+          			</table>
+          		</td>
+          	</tr>
+          	<tr>
+          		<td>
+	          		<table style="width: 300px;" valign="top" align="left">
+	          			<tbody>
+	                  		
+	                  			{% for asiento in asientos %}
+	                  			<tr>
+	                  				<td style="line-height: 14pt; padding-bottom: 4px; font-size: 17px;text-align: center;width: 100%;color: #000000;font-weight: bold;">
+	                      				<!--S: {#asiento.seccion#}, M: {#asiento.mesa#}, A: {#asiento.asiento#},-->{{asiento.tipo|capfirst}} {% if asiento.seccion == "1" %}-Cena{% elif asiento.seccion == "2" %}-Barra {% elif asiento.seccion == "3"%}-Cover{% endif %}
+	                    			</td>
+	                    			</tr> 
+	                  			{% endfor %}
+	              			
+	              		</tbody>
+	          		</table>
+                </td>
+             </tr>  
+             <tr>
+              <td colspan="2" style="
+                height: 25px; color:#000000;
+                font-size: 12px; font-family: Helvetica, Arial,
+                sans-serif;text-align: center;
+              ">TOTAL: $ {{orden.total_pagar_pesos}} 
+              </td>
+
+             </tr>   
+             <tr>
+          		<td colspan="2" style="
+	          		height: 25px; color:#000000;
+	          		font-size: 12px; font-family: Helvetica, Arial,
+	          		sans-serif;text-align: center;
+          		"><b>e-mail:</b> reservaciones@backstagecancun.com<br>
+              <b>Teléfono:</b> (998) 287 59 59
+          		</td>
+
+             </tr> 
+             <tr>
+              <td style="height: 20px;border-bottom: 2px dotted #000000;">
+              </td>
+             </tr>             
+
+	     </tbody>
+</table>
+
+<a id="imprimir" style="float: right" href="javascript:imprSelec('seleccion')" >Imprimir</a>
+<form >
+{% csrf_token %}
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{STATIC_URL}}js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script>
+
+function imprSelec(nombre)
+{
+  $('#imprimir').hide();
+  if(window.print){
+    window.print();
+    $.ajax("{% url 'update_print_status'%}",{
+        data:{
+          'id_order':{{orden.id}},
+          'csrfmiddlewaretoken':$('input[name="csrfmiddlewaretoken"]').val(),
+        },
+        type:'post',
+        cache:false,
+        beforeSend: function(result){
+                
+        },
+        success: function(result){
+           window.window.close();     
+            
+                           
+        },
+        error:function(result){
+           alert("error")
+        }
+    })
+    }
+  else{
+    alert("Para imprimir presione Crtl+P.");
+    $('#imprimir').show();
+    }
+
+}
+
+</script>
+

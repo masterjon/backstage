@@ -1,0 +1,1298 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load cart_total %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/booking.css" /> 
+<style type="text/css">
+<!--
+/* Terence Ordona, portal[AT]imaputz[DOT]com         */
+/* http://creativecommons.org/licenses/by-sa/2.0/    */
+
+
+/* define height and width of scrollable area. Add 16px to width for scrollbar          */
+div.tableContainer {
+    clear: both;
+    max-height: 285px;
+    overflow: auto;
+    width: 100%;
+}
+
+/* Reset overflow value to hidden for all non-IE browsers. */
+html>body div.tableContainer {
+    overflow: hidden;
+    width: 100%
+}
+
+/* define width of table. IE browsers only                 */
+div.tableContainer table {
+    float: left;
+    width: 100%;
+}
+
+/* define width of table. Add 16px to width for scrollbar.           */
+/* All other non-IE browsers.                                        */
+html>body div.tableContainer table {
+    width: 100%;
+}
+
+/* set table header to a fixed position. WinIE 6.x only                                       */
+/* In WinIE 6.x, any element with a position property set to relative and is a child of       */
+/* an element that has an overflow property set, the relative value translates into fixed.    */
+/* Ex: parent element DIV with a class of tableContainer has an overflow property set to auto */
+thead.fixedHeader tr {
+    position: relative
+}
+
+/* set THEAD element to have block level attributes. All other non-IE browsers            */
+/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
+html>body thead.fixedHeader tr {
+    display: block
+}
+
+
+/* define the table content to be scrollable                                              */
+/* set TBODY element to have block level attributes. All other non-IE browsers            */
+/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
+/* induced side effect is that child TDs no longer accept width: auto                     */
+html>body tbody.scrollContent {
+    display: block;
+    max-height: 190px;
+    overflow: auto;
+    width: 100%
+}
+
+/* make TD elements pretty. Provide alternating classes for striping the table */
+/* http://www.alistapart.com/articles/zebratables/                             */
+
+/* define width of TH elements: 1st, 2nd, and 3rd respectively.          */
+/* Add 16px to last TH for scrollbar padding. All other non-IE browsers. */
+/* http://www.w3.org/TR/REC-CSS2/selector.html#adjacent-selectors        */
+html>body thead.fixedHeader th {
+    width: 200px
+}
+
+html>body thead.fixedHeader th + th {
+    width: 240px
+}
+
+html>body thead.fixedHeader th + th + th {
+    width: 316px
+}
+
+/* define width of TD elements: 1st, 2nd, and 3rd respectively.          */
+/* All other non-IE browsers.                                            */
+/* http://www.w3.org/TR/REC-CSS2/selector.html#adjacent-selectors        */
+html>body tbody.scrollContent td {
+    width: 200px
+}
+
+html>body tbody.scrollContent td + td {
+    width: 240px
+}
+
+html>body tbody.scrollContent td + td + td {
+    width: 300px
+}
+-->
+
+</style>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{STATIC_URL}}js/heartcode-canvasloader-min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.fixedheadertable.js"></script>
+
+<script type="text/javascript">
+
+
+/* http://www.alistapart.com/articles/zebratables/ */
+function removeClassName (elem, className) {
+    elem.className = elem.className.replace(className, "").trim();
+}
+
+function addCSSClass (elem, className) {
+    removeClassName (elem, className);
+    elem.className = (elem.className + " " + className).trim();
+}
+
+String.prototype.trim = function() {
+    return this.replace( /^\s+|\s+$/, "" );
+}
+
+function stripedTable() {
+    if (document.getElementById && document.getElementsByTagName) {  
+        var allTables = document.getElementsByTagName('table');
+        if (!allTables) { return; }
+
+        for (var i = 0; i < allTables.length; i++) {
+            if (allTables[i].className.match(/[\w\s ]*scrollTable[\w\s ]*/)) {
+                var trs = allTables[i].getElementsByTagName("tr");
+                for (var j = 0; j < trs.length; j++) {
+                    removeClassName(trs[j], 'alternateRow');
+                    addCSSClass(trs[j], 'normalRow');
+                }
+                for (var k = 0; k < trs.length; k += 2) {
+                    removeClassName(trs[k], 'normalRow');
+                    addCSSClass(trs[k], 'alternateRow');
+                }
+            }
+        }
+    }
+}
+
+window.onload = function() { stripedTable(); }
+
+
+
+
+
+
+
+
+var cl = new CanvasLoader('canvasloader-container');
+                cl.setColor('#610e61'); // default is '#000000'
+function addtocart(seccion,mesa,asiento,tipo,horario_id){
+    var csrftoken=$("#csrftoken").find('input[name="csrfmiddlewaretoken"]').val()
+    var command="add";
+    
+    $.ajax("{% url 'cart'%}",{
+        data:{section:seccion,table:mesa,seat:asiento,type:tipo,horario:horario_id,csrfmiddlewaretoken:csrftoken,cmd:command},
+        type:'post',
+        cache:false,
+        timeout:8000,
+        beforeSend: function(result){
+            cl.show();
+        },
+        //add a timeout ---------------------------------------------------------
+        success: function(result){
+            //alert(result.success)
+            if (result.success==false){
+                if (result.message=="Asiento Ocupado"){
+                    $("#mesa-"+mesa+" .butacas[data-num='"+asiento+"']").removeClass('disponible').addClass("reservado"); 
+                    alert('Lo sentimos, este asiento ya fue reservado por alguien mas mientras usted lo elegía. Por favor seleccione algún otro disponible');
+                }
+                cl.hide();
+                $("#myModal").modal('hide')
+                
+                
+            }
+            else{
+                $("#carrito tbody").html(result.data)
+                $("#myModal").modal('hide')
+                cl.hide();
+                $("#mesa-"+mesa+" .butacas[data-num='"+asiento+"']").removeClass('disponible').addClass("seleccionado"); 
+            }
+            
+            
+            
+        },
+        error:function(jqXHR,textStatus,errorThrown){
+            cl.hide();
+        }
+    })
+}
+function del_cartitem(id,asiento,mesa){
+    var csrftoken=$("#csrftoken").find('input[name="csrfmiddlewaretoken"]').val();
+    var command="delete";
+    $.ajax("{% url 'cart'%}",{
+        data:{id_delete:id,csrfmiddlewaretoken:csrftoken,cmd:command},
+        type:'post',
+        cache:false,
+        beforeSend: function(result){
+                
+        },
+        success: function(result){
+                //alert(result)
+            $("#carrito tbody").html(result.data)
+            $("#mesa-"+mesa+" .butacas[data-num='"+asiento+"']").removeClass('seleccionado').addClass('disponible');
+                           
+        },
+        error:function(result){
+
+        }
+    })
+}
+
+$(document).ready(function(){
+
+//$('#carrito table').fixedHeaderTable({ footer: true, cloneHeadToFoot: true, fixedColumn: false });
+//Comenta codigo --------------------------------------------------------------
+$(".butacas").each(function(){$(this).append($(this).data("num"))})
+$(".mesa-centro,.centro").each(function(){$(this).append($(this).data("mesa"))})
+
+$("#seccion-reserva").change(function(){
+    switch ($(this).val()){
+        case "1":
+            $("#seccion1").css("opacity","1");
+            $("#seccion2").hide();
+            $("#seccion3").hide();
+            break;
+        case "2":
+            $("#seccion1").css("opacity","0.2");
+            $("#seccion2").css("opacity","1");
+           
+            $("#seccion2").show();
+            $("#seccion3").hide();
+            break;
+        case "3":
+            $("#seccion1").css("opacity","0.1");
+            $("#seccion2").css("opacity","0.2");
+            $("#seccion1 .mesa").css("border","none")
+          
+            $("#seccion2").show();
+            $("#seccion3").show();
+            break;
+    }
+    $('html, body').animate({ scrollTop: 580 }, 'slow');
+})
+
+    {% autoescape off %}
+        data={{data}}
+        data2={{data2}}
+    {% endautoescape %}
+
+    $.each(data, function(k, x){
+        $("#mesa-"+x.fields.mesa+" .butacas[data-num='"+x.fields.asiento+"']").removeClass('disponible').addClass('reservado');
+    });
+    $.each(data2, function(k, x){
+        $("#mesa-"+x.fields.mesa+" .butacas[data-num='"+x.fields.asiento+"']").removeClass('disponible').addClass("seleccionado");
+    });
+  
+    
+    $(document).on("click","div.mesa .disponible",function(){
+        //alert($(this).data("sec"))
+
+        var seccion=$(this).data("sec")
+        var mesa=$(this).data("mesa")
+        var asiento=$(this).data("num")
+        var p_nino;
+        var p_adulto; 
+        
+        switch (seccion){
+            case 1:
+                p_adulto="{{show_horario.precio_s1_adulto|currency}}";
+                p_nino="{{show_horario.precio_s1_nino|currency}}";
+                p_nino2="{{show_horario.precio_s1_nino}}";
+                break;
+            case 2:
+                p_adulto="{{show_horario.precio_s2_adulto|currency}}";
+                p_nino="{{show_horario.precio_s2_nino|currency}}";
+                p_nino2="{{show_horario.precio_s2_nino}}";
+                break;
+            case 3:
+                p_adulto="{{show_horario.precio_s3_adulto|currency}}";
+                p_nino="{{show_horario.precio_s3_nino|currency}}";
+                p_nino2="{{show_horario.precio_s3_nino}}";
+                break;
+        }
+        
+        $("#p_adulto").html(p_adulto)
+        if(p_nino2 == '0.00' || p_nino2 == '0,00' || p_nino2 == '0'){
+            $('.selecciona-nino').hide();
+        }
+        else{
+            $("#p_nino").html(p_nino)
+        }
+        $("#i_adulto").html('<button class="btn btn-primary" onclick="addtocart(\''+seccion+'\',\''+mesa+'\',\''+asiento+'\',\'adulto\',\'{{show_horario.id}}\')" >Seleccionar</button>')
+        $("#i_nino").html('<button class="btn btn-primary" onclick="addtocart(\''+seccion+'\',\''+mesa+'\',\''+asiento+'\',\'nino\',\'{{show_horario.id}}\')" >Seleccionar </button>')
+        //var content=$("#myModal").html();
+
+        //$.fancybox( content );
+        $('#myModal').modal('show');
+
+    })
+    
+    // $(".button-p").fancybox({
+      
+    // 'titlePosition' :   'over',
+    // 'beforeLoad' :   function() {
+    //     var p_nino=this.find(".butacas").data("sec");
+    //     alert(p_nino)
+    //     $("#p_nino").append("")
+    // }
+    // });
+})
+
+</script>
+{% endblock %}
+{% block cart %}
+
+{% endblock %}
+{% block content %}
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Selecciona el tipo de Boleto</h3>
+  </div>
+  <div class="modal-body">
+       <table class="table">
+        <thead>
+        <tr>
+            <td>
+                Tipo
+            </td>
+            <td>Precio</td>
+            <td></td>
+            <td></td>
+        </tr>
+        </thead>
+        <tr>
+            <td class="pontano-18">{% trans "Adult" %}</td>
+            <td id="p_adulto" class="pontano-18"></td>
+            <td id="i_adulto"></td>
+            <td rowspan="2"><div id="canvasloader-container"></div></td>
+        </tr>
+    
+        <tr class="selecciona-nino">
+            <td class="pontano-18" >{% trans "Child" %}</td>
+            <td id="p_nino" class="pontano-18"></td>
+            <td id="i_nino"></td>
+        </tr>
+       </table>
+        
+  </div>
+</div>
+<div class="container">
+    <div class="span10 offset1 text-center">
+        {% if request.LANGUAGE_CODE == "es" %}
+        <h2>Elige tu asiento</h2>
+        {% else %}
+        <h2>Choose your seat</h2>
+    {% endif %}
+        <table class="table header-description">
+            <thead>
+                <tr>
+                    <td>Show</td>
+                    {% if request.LANGUAGE_CODE == "es" %}
+                        <td>Selecciona tu sección:</td>
+                    {% else %}
+                        <td>Choose your section:</td>
+                    {% endif %}
+                    <td>{% trans "Cost" %}:</td>   
+                    <td>{% trans "Seat(s)" %}</td>
+                </tr>   
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="image">
+                       <img src="{{MEDIA_URL}}{{show_horario.show.previewImg}}"  alt="Show {{show_horario.show}}" >
+                       {{ show_horario.asiento }}
+                        <p class="pontano-18">Show:<i>{{ show_horario.show }}</i></p>
+                        <p class="pontano-16">Dia: <i>{{show_horario.fecha|date:"D d M Y"}}</i></p>
+                        <p class="pontano-16">Horario: <i>{{show_horario.fecha|date:"f a"}}</i></p>
+                    </td>
+                    <td class="seccion">
+                            <select id="seccion-reserva" name="seccion">
+                                {% if request.LANGUAGE_CODE == "es" %}
+                                    <option selected="selected" value="1">Sección 1</option>
+                                    <option value="2">Sección 2</option>
+                                    <option value="3">Sección 3</option>
+                                {% else %}
+                                    <option selected="selected" value="1">Section 1</option>
+                                    <option value="2">Section 2</option>
+                                    <option value="3">Section 3</option>
+                                {% endif %}
+                                    
+                            </select>
+                    </td>
+                    <td class="precios">
+                        <table class="table">
+                            
+                                <thead>
+                                    <tr>
+                                        {% if request.LANGUAGE_CODE == "es" %}
+                                            <td>Sección 1</td>
+                                            <td>Sección 2</td>
+                                            <td>Sección 3</td>
+                                         {% else %}
+                                            <td>Section 1</td>
+                                            <td>Section 2</td>
+                                            <td>Section 3</td>
+                                        {% endif %} 
+                                    </tr>
+                                </thead>
+                           
+                            <tr>
+                                <td>{% trans "Adult" %} {{show_horario.precio_s1_adulto|currency}}</td>
+                                <td>{% trans "Adult" %} {{show_horario.precio_s2_adulto|currency}}</td>
+                                <td>{% trans "Adult" %} {{show_horario.precio_s3_adulto|currency}}</td>
+                            </tr>
+                            <tr>
+                                {% if show_horario.precio_s1_nino > 0 %}
+                                <td>
+                                    {% trans "Adult" %} {{show_horario.precio_s1_nino|currency}}
+                                    
+                                </td>
+                                {% endif %}
+                                {% if show_horario.precio_s2_nino > 0 %}
+                                    <td>{% trans "Child" %} {{show_horario.precio_s2_nino|currency}}</td>
+                                {% endif %}
+                                {% if show_horario.precio_s3_nino > 0 %}
+                                <td>{% trans "Child" %} {{show_horario.precio_s3_nino|currency}}</td>
+                                {% endif %}
+                            </tr>  
+                            <tr> 
+                                <td >{{show_horario.servicios_s1}}</td>
+                                <td >{{show_horario.servicios_s2}}</td>
+                                <td >{{show_horario.servicios_s3}}</td>
+                            </tr>  
+                        </table>   
+                    </td>
+                    <td class="estado">
+                        <div class="row-fluid">
+                            <span>{% trans "Available" %}</span>
+                            <div class="disponible radius"></div>
+                        </div>
+                        <div class="row-fluid">
+                            <span>{% trans "Reserved" %}</span>
+                            <div class="reservado radius"></div>
+                        </div>
+                        <div class="row-fluid">
+                            <span>{% trans "Selected" %}</span>
+                            <div class="seleccionado radius"></div>
+                        </div>
+                        
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>       
+            
+    </div>
+   <div id="secciones" class="span10 offset1 text-center">
+        <div id="seccion1">
+            <div id="mesa-10" class="mesa" data-mesa="10">
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="10" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="10" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="10" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="10" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="10"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="10" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="10" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="10" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="10" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-11" class="mesa" data-mesa="11">
+                <div class="butacas-left">  
+                    <div class="disponible radius butacas" data-num="4" data-mesa="11" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="11" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="11" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="11" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="11"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="11" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="11" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="11" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="11" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-12" class="mesa" data-mesa="12">
+                <div class="butacas-left" >   
+                    <div class="disponible radius butacas" data-num="4" data-mesa="12" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="12" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="12" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="12" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="12"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="12" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="12" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="12" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="12" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-14" class="mesa" data-mesa="14">
+                <div class="butacas-left" >
+                    
+                    <div class="disponible radius butacas" data-num="4" data-mesa="14" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="14" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="14" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="14" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="14"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="14" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="14" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="14" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="14" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-15" class="mesa" data-mesa="15">
+                <div class="butacas-left" >
+                    <div class="disponible radius butacas" data-num="4" data-mesa="15" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="15" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="15" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="15" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="15"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="15" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="15" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="15" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="15" data-sec="1"></div>
+                </div>
+            </div>
+            <hr style="clear:both;margin:0">
+            <div id="mesa-20" class="mesa square-top" data-mesa="20">
+                <div class="disponible radius butacas extraseat" data-num="7" data-mesa="20" data-sec="1"></div>
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="3" data-mesa="20" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="20" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="20" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x7" data-mesa="20"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="20" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="20" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="20" data-sec="1"></div>
+                </div>
+            </div>
+
+
+            <div id="mesa-21" class="mesa square-top" data-mesa="21">
+                <div class="disponible radius butacas extraseat" data-num="7" data-mesa="21" data-sec="1"></div>
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="3" data-mesa="21" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="21" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="21" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x7" data-mesa="21"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="21" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="21" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="21" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-22" class="mesa square-top" data-mesa="22">
+                <div class="disponible radius butacas extraseat" data-num="7" data-mesa="22" data-sec="1"></div>
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="3" data-mesa="22" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="22" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="22" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x7" data-mesa="22"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="22" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="22" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="22" data-sec="1"></div>
+                </div>
+            </div>
+
+            <div id="mesa-23" class="mesa" data-mesa="23">
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="23" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="23" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="23" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="23" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="23"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="23" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="23" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="23" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="23" data-sec="1"></div>
+                    
+                </div>
+            </div>
+            <div id="mesa-24" class="mesa square-right" data-mesa="24" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="24" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="24" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="24" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="24" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x9" data-mesa="24"></div>
+                <div class="disponible radius butacas extraseat" data-num="5" data-mesa="24" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="24" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="24" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="24" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="24" data-sec="1"></div>
+
+                </div>
+            </div>
+
+            
+            <div class="escenario radius">
+                <p>Escenario</p>
+            </div>
+            <div id="mesa-30" class="mesa square-right" data-mesa="30" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="30" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="30" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="30" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="30" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x9" data-mesa="30"></div>
+                <div class="disponible radius butacas extraseat" data-num="5" data-mesa="30" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="30" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="30" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="30" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="30" data-sec="1"></div>
+
+                </div>
+            </div>
+            <div id="mesa-31" class="mesa square-right" data-mesa="31" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="31" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="31" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="31" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="31" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x9" data-mesa="31"></div>
+                <div class="disponible radius butacas extraseat" data-num="5" data-mesa="31" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="31" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="31" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="31" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="31" data-sec="1"></div>
+
+                </div>
+            </div>
+            <div id="mesa-32" class="mesa square-right" data-mesa="32" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="5" data-mesa="32" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="32" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="32" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x7" data-mesa="32"></div>
+                <div class="disponible radius butacas extraseat" data-num="4" data-mesa="32" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="32" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="32" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="32" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-40" class="mesa square-right" data-mesa="40" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="40" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="40" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="40" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="40" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x9" data-mesa="40"></div>
+                <div class="disponible radius butacas extraseat" data-num="5" data-mesa="40" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="40" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="40" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="40" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="40" data-sec="1"></div>
+
+                </div>
+            </div>
+            <div id="mesa-41" class="mesa square-right" data-mesa="41" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="41" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="41" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="41" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="41" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x9" data-mesa="41"></div>
+                <div class="disponible radius butacas extraseat" data-num="5" data-mesa="41" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="41" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="41" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="41" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="41" data-sec="1"></div>
+
+                </div>
+            </div>
+            <div id="mesa-42" class="mesa square-right" data-mesa="42" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="5" data-mesa="42" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="42" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="42" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x7" data-mesa="42"></div>
+                <div class="disponible radius butacas extraseat" data-num="4" data-mesa="42" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="42" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="42" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="42" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-50" class="mesa square-right" data-mesa="50" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="50" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="50" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="50" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="50" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x9" data-mesa="50"></div>
+                <div class="disponible radius butacas extraseat" data-num="5" data-mesa="50" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="50" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="50" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="50" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="50" data-sec="1"></div>
+
+                </div>
+            </div>
+            <div id="mesa-51" class="mesa square-right" data-mesa="51" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="51" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="51" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="51" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="51" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x9" data-mesa="51"></div>
+                <div class="disponible radius butacas extraseat" data-num="5" data-mesa="51" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="51" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="51" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="51" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="51" data-sec="1"></div>
+
+                </div>
+            </div>
+            <div id="mesa-52" class="mesa square-right" data-mesa="52" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="5" data-mesa="52" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="52" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="52" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x7" data-mesa="52"></div>
+                <div class="disponible radius butacas extraseat" data-num="4" data-mesa="52" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="52" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="52" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="52" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-60" class="mesa square-top" data-mesa="60">
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="3" data-mesa="60" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="60" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="60" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x7" data-mesa="60"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="60" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="60" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="60" data-sec="1"></div>
+                </div>
+                <div class="disponible radius butacas extraseat" data-num="7" data-mesa="60" data-sec="1"></div>
+            </div>
+            <div id="mesa-61" class="mesa square-top" data-mesa="61">
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="3" data-mesa="61" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="61" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="61" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x7" data-mesa="61"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="61" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="61" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="61" data-sec="1"></div>
+                </div>
+                <div class="disponible radius butacas extraseat" data-num="7" data-mesa="61" data-sec="1"></div>
+            </div>
+            <div id="mesa-62" class="mesa square-top" data-mesa="62">
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="3" data-mesa="62" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="62" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="62" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x7" data-mesa="62"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="62" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="62" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="62" data-sec="1"></div>
+                </div>
+                <div class="disponible radius butacas extraseat" data-num="7" data-mesa="62" data-sec="1"></div>
+            </div>
+            <div id="mesa-63" class="mesa" data-mesa="63">
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="63" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="63" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="63" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="63" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="63"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="63" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="63" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="63" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="63" data-sec="1"></div>
+                    
+                </div>
+            </div>
+            <div id="mesa-64" class="mesa square-right" data-mesa="64" style="width: 112px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="64" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="64" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="64" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="64" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x9" data-mesa="64"></div>
+                <div class="disponible radius butacas extraseat" data-num="5" data-mesa="64" data-sec="1"></div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="64" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="64" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="64" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="64" data-sec="1"></div>
+                </div>
+            </div>
+            <hr style="clear:both;margin:0">
+            <div id="mesa-70" class="mesa" data-mesa="70">
+                <div class="butacas-left">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="70" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="70" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="70" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="70" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="70"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="70" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="70" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="70" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="70" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-71" class="mesa" data-mesa="71">
+                <div class="butacas-left">
+                    
+                    <div class="disponible radius butacas" data-num="4" data-mesa="71" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="71" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="71" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="71" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="71"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="71" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="71" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="71" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="71" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-72" class="mesa" data-mesa="72">
+                <div class="butacas-left" >
+                    
+                    <div class="disponible radius butacas" data-num="4" data-mesa="72" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="72" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="72" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="72" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="72"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="72" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="72" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="72" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="72" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-73" class="mesa" data-mesa="73">
+                <div class="butacas-left" >
+                    
+                    <div class="disponible radius butacas" data-num="4" data-mesa="73" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="73" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="73" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="73" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="73"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="73" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="73" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="73" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="73" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-74" class="mesa" data-mesa="74">
+                <div class="butacas-left" >
+                    
+                    <div class="disponible radius butacas" data-num="4" data-mesa="74" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="74" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="74" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="74" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x8" data-mesa="74"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="8" data-mesa="74" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="74" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="74" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="74" data-sec="1"></div>
+                </div>
+            </div>
+            <div id="mesa-75" class="mesa" data-mesa="75">
+                <div class="butacas-left" >
+                    <div class="disponible radius butacas" data-num="3" data-mesa="75" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="75" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="75" data-sec="1"></div>
+                </div>
+                <div class="radius mesa-centro mesa-vert-x6" data-mesa="75"></div>
+                <div class="butacas-right">
+                    <div class="disponible radius butacas" data-num="6" data-mesa="75" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="75" data-sec="1"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="75" data-sec="1"></div>
+                </div>
+            </div>
+            
+                
+        </div><!--Seccion1-->
+
+        <div id="seccion2">
+            <div class="clear"></div>
+
+            <div id="mesa-200" class="mesa circular-top">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="25" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="24" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="23" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="22" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="21" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="20" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="19" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="18" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="17" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="16" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="15" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="14" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="13" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="12" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="11" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="10" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="200" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="200" data-sec="2"></div>
+                </div>
+                <div class="mesas-row">
+                    <div class="centro" data-mesa="200"></div>
+                    <div class="centro" data-mesa="200"></div>
+                    <div class="centro" data-mesa="200"></div>
+                    <div class="centro" data-mesa="200"></div>
+                    <div class="centro" data-mesa="200"></div>
+                    <div class="centro" data-mesa="200"></div>
+                    <div class="centro" data-mesa="200"></div>
+                    <div class="centro" data-mesa="200"></div>
+                </div>
+            </div>
+        
+            <div class="escenario-s2"></div>
+            <div id="mesa-504" class="mesa square-right" data-mesa="504" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="504" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="504" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="504" data-sec="2"></div>
+
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="504"></div>
+                
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="504" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="504" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="504" data-sec="2"></div>
+                </div>
+            </div>
+            <div id="mesa-503" class="mesa square-right" data-mesa="503" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="503" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="503" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="503" data-sec="2"></div>
+
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="503"></div>
+                
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="503" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="503" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="503" data-sec="2"></div>
+                </div>
+            </div>
+            <div id="mesa-502" class="mesa square-right" data-mesa="502" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="502" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="502" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="502" data-sec="2"></div>
+
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="502"></div>
+                
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="502" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="502" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="502" data-sec="2"></div>
+                </div>
+            </div>
+            <div id="mesa-501" class="mesa square-right" data-mesa="501" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="501" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="501" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="501" data-sec="2"></div>
+
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="501"></div>
+                
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="501" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="501" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="501" data-sec="2"></div>
+                </div>
+            </div>
+            <div id="mesa-500" class="mesa square-right" data-mesa="500" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="500" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="500" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="500" data-sec="2"></div>
+
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="500"></div>
+                
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="500" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="500" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="500" data-sec="2"></div>
+                </div>
+            </div>
+
+            <div id="mesa-300" class="mesa circular-top">
+                <div class="mesas-row">
+                    <div class="centro" data-mesa="300"></div>
+                    <div class="centro" data-mesa="300"></div>
+                    <div class="centro" data-mesa="300"></div>
+                    <div class="centro" data-mesa="300"></div>
+                    <div class="centro" data-mesa="300"></div>
+                    <div class="centro" data-mesa="300"></div>
+                    <div class="centro" data-mesa="300"></div>
+                    <div class="centro" data-mesa="300"></div>
+                </div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="25" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="24" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="23" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="22" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="21" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="20" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="19" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="18" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="17" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="16" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="15" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="14" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="13" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="12" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="11" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="10" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="300" data-sec="2"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="300" data-sec="2"></div>
+                </div>
+            </div>
+        </div><!--Seccion2-->
+        <div id="seccion3"> 
+            <div id="mesa-100" class="mesa circular-top">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="23" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="22" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="21" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="20" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="19" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="18" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="17" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="16" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="15" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="14" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="13" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="12" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="11" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="10" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="100" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="100" data-sec="3"></div>
+                </div>
+                <div class="mesas-row">
+                    <div class="centro" data-mesa="100"></div>
+                    <div class="centro" data-mesa="100"></div>
+                    <div class="centro" data-mesa="100"></div>
+                    <div class="centro" data-mesa="100"></div>
+                    <div class="centro" data-mesa="100"></div>
+                    <div class="centro" data-mesa="100"></div>
+                    <div class="centro" data-mesa="100"></div>
+                    <div class="centro" data-mesa="100"></div>
+                </div>
+            </div>
+        
+            <div class="escenario-s3"></div>
+
+            <div id="mesa-604" class="mesa square-right" data-mesa="604" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="604" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="604" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="604" data-sec="3"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="604"></div> 
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="604" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="604" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="604" data-sec="3"></div>
+                </div>
+            </div>
+            <div id="mesa-603" class="mesa square-right" data-mesa="603" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="603" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="603" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="603" data-sec="3"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="603"></div> 
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="603" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="603" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="603" data-sec="3"></div>
+                </div>
+            </div>
+            <div id="mesa-602" class="mesa square-right" data-mesa="602" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="602" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="602" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="602" data-sec="3"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="602"></div> 
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="602" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="602" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="602" data-sec="3"></div>
+                </div>
+            </div>
+            <div id="mesa-601" class="mesa square-right" data-mesa="601" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="601" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="601" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="601" data-sec="3"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="601"></div> 
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="601" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="601" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="601" data-sec="3"></div>
+                </div>
+            </div>
+            <div id="mesa-600" class="mesa square-right" data-mesa="600" style="width: 75px">
+                <div class="butacas-top">
+                    <div class="disponible radius butacas" data-num="1" data-mesa="600" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="600" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="600" data-sec="3"></div>
+                </div>
+                <div class="radius mesa-centro mesa-horz-x6" data-mesa="600"></div> 
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="4" data-mesa="600" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="600" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="600" data-sec="3"></div>
+                </div>
+            </div>
+            
+            <div id="mesa-400" class="mesa circular-top">
+                <div class="mesas-row">
+                    <div class="centro" data-mesa="400"></div>
+                    <div class="centro" data-mesa="400"></div>
+                    <div class="centro" data-mesa="400"></div>
+                    <div class="centro" data-mesa="400"></div>
+                    <div class="centro" data-mesa="400"></div>
+                    <div class="centro" data-mesa="400"></div>
+                    <div class="centro" data-mesa="400"></div>
+                    <div class="centro" data-mesa="400"></div>
+                </div>
+                <div class="butacas-bottom">
+                    <div class="disponible radius butacas" data-num="23" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="22" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="21" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="20" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="19" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="18" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="17" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="16" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="15" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="14" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="13" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="12" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="11" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="10" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="9" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="8" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="7" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="6" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="5" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="4" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="3" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="2" data-mesa="400" data-sec="3"></div>
+                    <div class="disponible radius butacas" data-num="1" data-mesa="400" data-sec="3"></div>
+                </div>
+            </div>  
+        </div>
+    </div><!--div content main-->
+</div>
+
+<div id="carrito" class="clearfix navbar-fixed-bottom text-center" >
+<div id="tableContainer" class="tableContainer">
+    <table class="table table-condensed table-hover scrollTable"   width="100%" border="0" cellpadding="0" 
+cellspacing="0">
+    <thead class="fixedHeader">
+        <tr>
+            <th>#Sección</th>
+            <th>#Mesa</th>
+            <th>#Asiento</th>
+            <th>Tipo</th>
+            <th>Precio</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody class="scrollContent">
+        {% for item in request.session.cart %}
+            <tr>
+                <td>{{item.seccion}}</td>
+                <td>{{item.mesa}}</td>
+                <td>{{item.asiento}}</td>
+                <td>{{item.tipo}}</td>
+                <td class="item-price">{{item.price|currency}}</td>
+                <td><i class="icon-remove-sign" onclick="del_cartitem('{{forloop.counter0}}','{{item.asiento}}','{{item.mesa}}')"></i></td>
+            </tr>
+        {% endfor %}
+        <tr >
+            <td colspan="6" id="total">
+                Total: {{request.session.cart|running_total:"price"|currency}}
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="6" >
+             
+            </td>
+        </tr>
+    </tfoot>
+    </table>
+    <form id="cart-form" method="post" action="{% url 'checkout' %}">{% csrf_token %}
+                    <input type="hidden" name="horario" value="{{show_horario.id}}">
+                    <button type="submit" class="btn  btn-primary">Comprar Boletos</button>
+                </form>
+</div>
+</div>
+<div style="display:none">
+<form id="csrftoken">{% csrf_token %}</form>
+    <div id="pop-up">
+   
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block title %} Menu {% endblock %}
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/menufood.css" />
+{% endblock %}
+{% block content %}
+{% for menu in menucomida_list %}
+	<div class="item clearfix">
+		<div class="image">
+			<img src="{{MEDIA_URL}}{{menu.imagen}}">
+		</div>
+		<div class="titulo"><h2>{{menu.nombre}}</h2></div>
+		<div class="descripcion">
+			<div class="entrada"><span>Entrada:</span> {{menu.entrada}}</div>
+			<div class="platofuerte"><span>Plato fuerte: </span> {{menu.plato_fuerte}}</div>
+			<div class="postre"><span>Postre:</span> {{menu.postre}}</div>
+		</div>
+	</div>
+{% endfor %}
+{% endblock %}
+ 
+

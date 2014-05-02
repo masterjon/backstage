@@ -1,0 +1,137 @@
+      <table width="800" align="center" border="0" cellpadding="0" cellspacing="0" bgcolor="#000000">
+        <tbody>
+          <tr>
+            <td colspan="2">
+            	<img moz-do-not-send="true"
+				src="http://backstagecancun.com/static/img/Header/logo.png"
+                style="display: block; text-align: center;" alt="Confirmación de compra"
+                width="239" height="105"></td>
+          </tr>
+          <tr>
+            <td colspan="2" style="padding-top: 7px; padding-left: 25px;
+              height: 25px; color:#dabce9; font-weight: bolder;
+              font-size: 18px; font-family: Helvetica, Arial,
+              sans-serif;">DATOS DE LA ORDEN </td>
+          </tr>
+          <tr>
+            <td colspan="2" style="padding-left: 25px; padding-right:
+              25px; height: 40px;color: #ffffff"><b>Estimado cliente {{nombre_comprador}}</b>, los datos de
+              su compra o reservación están indicados a continuación.
+          	</td>
+          </tr>
+          <tr>
+            <td style="width:400px;" valign="top">
+              <table width="399" border="0">
+                <tbody>
+                  <tr>
+                    <td style="letter-spacing: .5px; padding-top: 5px;
+                      padding-left: 28px; color: #fcd700; font-weight:
+                      bolder; font-size: 14px; font-family: Helvetica,
+                      Arial, sans-serif; height: 23px; background-color:
+                      #333;">Número de compra o  clave de reservación:</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom: 10px; padding-left: 28px;
+                      padding-right: 5px; padding-top: 5px; font-size:
+                      14px;color: #ffffff">{{clave_reservacion}}</td>
+                  </tr>
+                  <tr>
+                    <td style="letter-spacing: .5px; padding-top: 5px;
+                      padding-left: 28px; color: #fcd700; font-weight:
+                      bolder; font-size: 14px; font-family: Helvetica,
+                      Arial, sans-serif; height: 23px; background-color:
+                      #333;">Lugar:</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom: 10px; padding-left: 28px;
+                      padding-right: 5px; padding-top: 5px; font-size:
+                      14px;color: #ffffff">Backstage Cancún</td>
+                  </tr>
+                  <tr>
+                    <td style="letter-spacing: .5px; padding-top: 5px;
+                      padding-left: 28px; color: #fcd700; font-weight:
+                      bolder; font-size: 14px; font-family: Helvetica,
+                      Arial, sans-serif; height: 23px; background-color:
+                      #333;">Show:</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom: 10px; padding-left: 28px;
+                      padding-right: 5px; padding-top: 5px; font-size:
+                      14px;color: #ffffff">{{show}}</td>
+                  </tr>
+                  <tr>
+                    <td style="letter-spacing: .5px; padding-top: 5px;
+                      padding-left: 28px; color: #fcd700; font-weight:
+                      bolder; font-size: 14px; font-family: Helvetica,
+                      Arial, sans-serif; height: 23px; background-color:
+                      #333;">Fecha:</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom: 10px; padding-left: 28px;
+                      padding-right: 5px; padding-top: 5px; font-size:
+                      14px;color: #ffffff">{{fecha}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td style="width: 400px;" valign="top" align="right">
+              <table width="399" border="0">
+                <tbody>
+                  <tr>
+                    <td style="letter-spacing: .5px; padding-top: 5px;
+                      padding-left: 28px; color: #fcd700; font-weight:
+                      bolder; font-size: 14px; font-family: Helvetica,
+                      Arial, sans-serif; height: 23px; background-color:
+                      #333;">Boletos:</td>
+                  </tr>
+                  <tr>
+                  {% for boleto in boletos %}
+                  	<td style="line-height: 14pt; padding-bottom: 10px;
+                      padding-left: 28px; padding-right: 5px;
+                      padding-top: 5px; font-size: 14px;float: left;width: 100%;color: #ffffff">
+                      <!-- Seccion: , Mesa: , Asiento: ,Tipo: -->{{boleto.tipo|capfirst}} {% if boleto.seccion == "1" %}-Cena{% elif boleto.seccion == "2" %}-Barra {% elif boleto.seccion == "3"%}-Cover{% endif %}
+                      <br>
+                    </td>
+                  {% endfor %}
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom: 10px; padding-left: 28px;
+                      padding-right: 5px; padding-top: 5px; font-size:
+                      14px;"> <br>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <!--tr>
+            <td style="font-weight: bolder; font-size: 18px;
+              padding-top: 7px; padding-left: 28px; height: 35px;
+              background-color: #000000;color: #ffffff">TOTAL DE LA COMPRA</td>
+            <td style="background-color: #000000; padding-right: 28px;
+              padding-top: 7px; height: 35px; text-align: right;
+              font-weight: bolder; font-size: 18px;color: #ffffff">{#total#} USD/{#total_pesos#}MXN</td>
+          </tr-->
+       
+          <tr>
+            <td colspan="2" style="font-weight: bolder; font-size: 18px;
+              padding-left: 28px; height: 27px; background-color:
+              #000000;color: #ffffff">NOTAS DEL SERVICIO</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="padding-left: 28px; padding-right:
+              28px; background-color: #000000; font-size: 10px;color: #ffffff">
+              <p>Boletos comprados: todos aquellos boletos que se compran en línea con tarjeta de crédito (VISA, Mastercard y American Express). Desde el momento que compra sus boletos, sus lugares están asegurados y para recogerlos le recomendamos estar 30 minutos antes de iniciar la función.<br>
+                - No habrá cancelaciones.<br>
+                - Una vez realizados los cargos a su tarjeta, estos no son reembolsables.<br>
+                - Todo boleto pagado deberá ser recogido el día y en el horario del show correspondiente. <br>
+                Para recoger los boletos es necesario que el titular presente la tarjeta de crédito con la que se hizo la compra y una identificación en taquilla. Se recomienda estar al menos 30 minutos antes del comienzo de la función. <br>
+                <b>Boletos reservados:</b> redima su clave presentándola con el personal de taquilla y una identificación con un mínimo de cuarenta y cinco minutos previo a la función para hacer válida su reservación.<br>
+                <b>Cambios de horario:</b> Es muy importante hacer la compra o reservación con el número de personas exacto que asistirá a los shows. Si necesita cambiar la fecha de su reservación por favor comuníquese con nosotros. Todos los cambios están sujetos a disponibilidad. Existe un cargo adicional por cambio de 100.00 pesos por cada uno de los boletos que se deseen modificar.<br>
+                Si tiene algún problema llame por favor al: (52) (998)-287–5959 con horario de atención de 9:00 a 19:00 hrs. de lunes a viernes.
+                </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+   

@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/payment.css" /> 
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}js/fancybox/jquery.fancybox.css?v=2.1.4"/>
+{% endblock %}
+{% block scripts %}
+{% endblock %}
+{% block content %}
+<p>
+Lo sentimos, pero tu sesión ha terminado. Puedes comenzar nuevamente dando click en el siguiente botón.
+</p>
+<a href="/booking/{{horario}}">Inicio</a>
+
+{% endblock %}
